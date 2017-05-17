@@ -44,4 +44,7 @@
   <set-configuration-property name="gin.ginjector.modules" 
                                 value="com.risetek.auth.client.gin.ClientModule"/>
 
+  <set-configuration-property name="gwtp.bootstrapper" 
+                                value="com.risetek.auth.client.SecurityBootstrapper"/>
+
 </module>

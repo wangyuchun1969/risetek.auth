@@ -1,0 +1,61 @@
+package com.risetek.auth.server.shiro;
+
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
+
+import com.google.inject.Inject;
+import com.risetek.auth.server.UserManagement;
+
+public class MyAuthorizingRealm extends AuthorizingRealm {
+
+	@Inject
+	private UserManagement userManagement;
+	
+	public MyAuthorizingRealm() {
+		setCacheManager(new MemoryConstrainedCacheManager());
+	}
+	
+	@Override
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
+			throws AuthenticationException {
+		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+		// System.out.println("In EgAuthorizingRealm.doGetAuthenticationInfo for: " + upToken.getUsername() + "/" + new String(upToken.getPassword()) + " - remember=" + upToken.isRememberMe());
+		
+		if(userManagement.isValid(upToken.getUsername(), upToken.getPassword())) {
+			SecurityUtils.getSubject().getSession().setAttribute("user", userManagement.getUserInfomation(upToken.getUsername()));
+			return new SimpleAuthenticationInfo(upToken.getUsername(), upToken.getPassword(), getName());
+		}
+		
+		return null;
+	}
+
+	@Override
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection pc) {
+		System.out.println("In EgAuthorizingRealm.doGetAuthorizationInfo");
+		// Doing nothing just now
+		
+		if (pc == null) {
+			throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
+		}
+		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+
+		String username = (String) pc.fromRealm(getName()).iterator().next();
+		List<String> roles = userManagement.getRoles(username);
+		for(String role:roles)
+			authorizationInfo.addRole(role);
+
+		return authorizationInfo;		
+	}
+}

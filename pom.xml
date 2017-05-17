@@ -192,24 +192,6 @@
 						,WEB-INF/classes/risetek/public/**
 						,WEB-INF/classes/com/risetek/yun74/bindery/**
 						,WEB-INF/classes/com/risetek/yun74/client/**
-						,WEB-INF/lib/jetty-*
-						,WEB-INF/lib/websocket-*
-						,WEB-INF/lib/gwt-servlet-*
-						,WEB-INF/lib/mysql-connector-java-*
-						,WEB-INF/lib/guava-*
-						,WEB-INF/lib/protobuf-java-*
-						,WEB-INF/lib/javax.mail-*
-						,WEB-INF/lib/c3p0-*
-						,WEB-INF/lib/jackson-*
-						,WEB-INF/lib/activation-*
-						,WEB-INF/lib/aopalliance-*
-						,WEB-INF/lib/json-*
-						,WEB-INF/lib/mybatis-3*
-						,WEB-INF/lib/validation-api-*
-						,WEB-INF/lib/commons-beanutils-*
-						,WEB-INF/lib/commons-codec-*
-						,WEB-INF/lib/log4j-*
-						,WEB-INF/lib/gwtp-dispatch-*
 						,WEB-INF/lib/guice-*
 						,WEB-INF/lib/shiro-*
 					</packagingExcludes>
