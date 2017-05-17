@@ -44,9 +44,4 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
 	public void showUserInfo(String info) {
 		panel.getElement().setInnerText("---" + info);
 	}
-
-	@Override
-    protected void onAttach() {
-		getUiHandlers().upDateUser();
-    }
 }

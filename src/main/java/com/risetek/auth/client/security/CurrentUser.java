@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.shared.AuthorityAction;
 import com.risetek.auth.shared.AuthorityInfo;
@@ -28,11 +29,7 @@ public class CurrentUser {
 		this.placeManager = placeManager;
 	}
 	
-	public enum InfoStatus {UNDETECTED, SYNCED };
-	
-	public InfoStatus InformationState = InfoStatus.UNDETECTED;
-	
-    private	AuthorityInfo currentAuthorityInfo;
+    private	AuthorityInfo authorityInfo;
 	
     public void forceSync() {
     	GWT.log("sync user information");
@@ -47,26 +44,21 @@ public class CurrentUser {
 				// Here we get user information from server.
 				GWT.log("we get user information");
 				setAuthorityInfo(result.getResults());
-
-				// Goto Place default
-				if(!currentAuthorityInfo.isLogin() 
-					&& (placeManager.getCurrentPlaceRequest().getNameToken() != NameTokens.login))
+				if(!authorityInfo.isLogin())
+					placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.login).build());
+				else
 					placeManager.revealDefaultPlace();
 			}});
     }
     
 	public void setAuthorityInfo(AuthorityInfo authorityInfo) {
-		if(null == authorityInfo)
-			GWT.log("current user is null");
-		
-		InformationState = InfoStatus.SYNCED;
-		currentAuthorityInfo = authorityInfo;
+		this.authorityInfo = authorityInfo;
 
-		for( Entry<String, Boolean>  e : currentAuthorityInfo.getRoles().entrySet() )
+		for( Entry<String, Boolean>  e : authorityInfo.getRoles().entrySet() )
 			GWT.log("Current have: " + e.getKey() + " " + (e.getValue() ? "powered" : "forribden"));
 	}
 	
 	public AuthorityInfo getAuthorityInfo() {
-		return currentAuthorityInfo;
+		return authorityInfo;
 	}
 }

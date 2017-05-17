@@ -2,6 +2,7 @@ package com.risetek.auth.client.application.home;
 
 import java.util.Map.Entry;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.HasUiHandlers;
@@ -47,7 +48,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 		StringBuffer bf = new StringBuffer();
 		bf.append("hello:").append(null==user?"null":"not null");
 		//getView().showUserInfo("hello:" + (null==user?"null":"not null"));
-		
+		GWT.log("update user");
         AuthorityInfo info = user.getAuthorityInfo();
         for(Entry<String, Boolean> e:info.getRoles().entrySet()) {
         	bf.append(e.getKey() + " is " + (e.getValue() ? "有权" : "无权"));
@@ -55,4 +56,12 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
         
         getView().showUserInfo(bf.toString());
 	}
+	
+	@Override
+    protected void onReset() {
+		GWT.log("onReset");
+    	super.onReset();
+    	upDateUser();
+    }
+	
 }

@@ -9,31 +9,25 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 import com.risetek.auth.shared.AuthToken;
-import com.risetek.auth.shared.AuthorityInfo;
-import com.risetek.auth.shared.GetResult;
+import com.risetek.auth.shared.GetNoResult;
 import com.risetek.auth.shared.LogInOutAction;
 
 public class LogInOutActionHandler implements
-		ActionHandler<LogInOutAction, GetResult<AuthorityInfo>> {
+		ActionHandler<LogInOutAction, GetNoResult> {
 	
 	@Override
-	public GetResult<AuthorityInfo> execute(LogInOutAction action,
+	public GetNoResult execute(LogInOutAction action,
 			ExecutionContext context) throws ActionException {
 
 		AuthToken token = action.authToken;
-		Subject subject = SecurityUtils.getSubject();
 		if (token != null) {
 			// Login
 			UsernamePasswordToken upt = new UsernamePasswordToken(
 					token.getUsername(), token.getPassword().toCharArray(),
 					token.isRememberMe());
+			Subject subject = SecurityUtils.getSubject();
 			try {
 				subject.login(upt);
-				AuthorityInfo info = new AuthorityInfo();
-				info.setRealm("todo!");
-				info.setLogin(subject.isAuthenticated());
-
-				return new GetResult<AuthorityInfo>(info);
 			} catch (AuthenticationException e) {
 				throw new ActionException(e.getMessage(), e);
 			} finally {
@@ -45,7 +39,7 @@ public class LogInOutActionHandler implements
 			SecurityUtils.getSubject().logout();
 			SecurityUtils.getSubject().getSession().stop();
 		}
-		return new GetResult<AuthorityInfo>(null);
+		return new GetNoResult();
 	}
 
 	@Override
@@ -54,7 +48,7 @@ public class LogInOutActionHandler implements
 	}
 
 	@Override
-	public void undo(LogInOutAction action, GetResult<AuthorityInfo> result, ExecutionContext context)
+	public void undo(LogInOutAction action, GetNoResult result, ExecutionContext context)
 			throws ActionException {
 		// Do nothing
 	}

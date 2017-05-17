@@ -13,13 +13,12 @@ import com.gwtplatform.mvp.client.annotations.NoGatekeeper;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
-import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.CurrentUser;
 import com.risetek.auth.shared.AuthToken;
 import com.risetek.auth.shared.AuthorityInfo;
-import com.risetek.auth.shared.GetResult;
+import com.risetek.auth.shared.GetNoResult;
 import com.risetek.auth.shared.LogInOutAction;
 
 public class LoginPagePresenter extends
@@ -64,33 +63,25 @@ public class LoginPagePresenter extends
 		LogInOutAction action = new LogInOutAction(token);
 		getView().setStatus("获取用户权限...");
 
-		dispatcher.execute(action, new AsyncCallback<GetResult<AuthorityInfo>>() {
+		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				getView().setStatus("用户名或密码错误");
 			}
 
 			@Override
-			public void onSuccess(GetResult<AuthorityInfo> result) {
-//				getView().setStatus("获取用户权限...");
-				user.setAuthorityInfo(result.getResults());
-				AuthorityInfo info = user.getAuthorityInfo();
-				GWT.log("loged:" + user + "info is:" + (null==info? " nul" : info));
-				placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.HOME).build());
+			public void onSuccess(GetNoResult result) {
+				user.forceSync();
 			}
 		});
 	}
-	/*
+	
 	@Override
-	public void onReveal() {
+	public void onReset() {
+		super.onReset();
 		AuthorityInfo info = user.getAuthorityInfo();
 		GWT.log("login on reveal:" + user + "info is:" + (null==info? " nul" : info));
-		if(null != info && info.isLogin)
-			placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.HOME).build());
-	}
-	*/
-	@Override
-	public void onReveal() {
-		user.forceSync();
+		if(null != info && info.isLogin())
+			placeManager.revealDefaultPlace();
 	}
 }
