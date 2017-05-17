@@ -23,7 +23,7 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 		Subject subject = SecurityUtils.getSubject();
 		// TODO: authority with current resources.
 
-		PrincipalCollection principas = subject.getPrincipals();		
+		PrincipalCollection principas = subject.getPrincipals();
 		if( principas != null ) {
 			Set<String> realmNames = principas.getRealmNames();
 			for( String s:realmNames)
@@ -31,15 +31,15 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 		}
 		
 		AuthorityInfo info = new AuthorityInfo();
-		info.isLogin = subject.isAuthenticated();
-		if(info.isLogin) {
+		info.setLogin(subject.isAuthenticated());
+		if(info.isLogin()) {
 			try {
 				boolean[] roleResult = subject.hasRoles(Arrays.asList(checkRoles));
 				for (int i = 0; i < checkRoles.length; i++) {
 					info.getRoles().put(checkRoles[i], roleResult[i]);
 					System.out.println("Role: " + checkRoles[i] + " " + (roleResult[i] ? "powered" : "forbidden"));
 				}
-				System.out.println("subject.isAuthenticated() is: " + (info.isLogin ? "login" : "logout"));
+				System.out.println("subject.isAuthenticated() is: " + (info.isLogin() ? "login" : "logout"));
 				
 				if( subject.isPermitted("user:login") )
 					System.out.println("subject isPermitted() for user:login");

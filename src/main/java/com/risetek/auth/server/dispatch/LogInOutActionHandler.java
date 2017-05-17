@@ -30,7 +30,8 @@ public class LogInOutActionHandler implements
 			try {
 				subject.login(upt);
 				AuthorityInfo info = new AuthorityInfo();
-				info.isLogin = subject.isAuthenticated();
+				info.setRealm("todo!");
+				info.setLogin(subject.isAuthenticated());
 
 				return new GetResult<AuthorityInfo>(info);
 			} catch (AuthenticationException e) {

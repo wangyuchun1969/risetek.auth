@@ -21,6 +21,6 @@ public class LoggedInGatekeeper implements Gatekeeper {
 			GWT.log("CurrentUser is not special.");
 			return false;
 		}
-		return user.getAuthorityInfo().isLogin;
+		return user.getAuthorityInfo().isLogin();
 	}
 }

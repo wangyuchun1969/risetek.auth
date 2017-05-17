@@ -5,23 +5,21 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtplatform.mvp.client.ViewImpl;
+import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.risetek.auth.client.generator.IBuilderStamp;
 
-public class HomeView extends ViewImpl implements HomePresenter.MyView {
+public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePresenter.MyView {
 
     private SimplePanel panel = new SimplePanel();
+    
     @Inject
     HomeView() {
 		FlowPanel flows = new FlowPanel();
         initWidget(flows);
         
         flows.add(panel);
-        panel.add(new Label("hello world!"));
-
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());
     }
@@ -41,4 +39,14 @@ public class HomeView extends ViewImpl implements HomePresenter.MyView {
 		bottomPanel.add(buildTimestamp);
 		return wrapPanel;
 	}
+
+	@Override
+	public void showUserInfo(String info) {
+		panel.getElement().setInnerText("---" + info);
+	}
+
+	@Override
+    protected void onAttach() {
+		getUiHandlers().upDateUser();
+    }
 }

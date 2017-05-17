@@ -21,10 +21,10 @@ public class ClientModule extends AbstractPresenterModule {
         
     	install(new RpcDispatchAsyncModule());
 
-        // Application special
-        install(new ApplicationModule());
-        
         bind(CurrentUser.class).asEagerSingleton();
         bind(LoggedInGatekeeper.class);
+
+        // Application special
+        install(new ApplicationModule());
     }
 }

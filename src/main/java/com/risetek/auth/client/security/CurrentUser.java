@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
@@ -13,6 +14,7 @@ import com.risetek.auth.shared.AuthorityAction;
 import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetResult;
 
+@Singleton
 public class CurrentUser {
 	
 	private final EventBus eventBus;
@@ -47,7 +49,7 @@ public class CurrentUser {
 				setAuthorityInfo(result.getResults());
 
 				// Goto Place default
-				if(!currentAuthorityInfo.isLogin 
+				if(!currentAuthorityInfo.isLogin() 
 					&& (placeManager.getCurrentPlaceRequest().getNameToken() != NameTokens.login))
 					placeManager.revealDefaultPlace();
 			}});
