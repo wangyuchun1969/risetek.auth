@@ -1,5 +1,7 @@
 package com.risetek.auth.client.application;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
@@ -32,7 +34,6 @@ public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView,
     		DispatchAsync dispatcher, PlaceManager placeManager) {
         super(eventBus, view, proxy, RevealType.Root);
         getView().setUiHandlers(this);
-
     }
 
 	@Override

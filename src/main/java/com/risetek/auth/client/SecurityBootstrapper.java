@@ -1,6 +1,7 @@
 package com.risetek.auth.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
@@ -28,6 +29,11 @@ public class SecurityBootstrapper implements Bootstrapper {
 	
 	@Override
 	public void onBootstrap() {
+		if("/login.html".equals(Location.getPath())) {
+			placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.auth).build());
+			return;
+		}
+		
 		dispatcher.execute(new AuthorityAction(), new AsyncCallback<GetResult<AuthorityInfo>>() {
 			@Override
 			public void onFailure(Throwable caught) {

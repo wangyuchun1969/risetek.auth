@@ -28,6 +28,9 @@ public class MyShiroWebModule extends ShiroWebModule {
         // 静态页面信息都可以访问
         addFilterChain("/risetek/**", ANON);
 
+        // OAuth
+        addFilterChain("/oath/**", ANON);
+        
         // 登录和授权
         addFilterChain("/dispatch/LogInOutAction", ANON);
         // 获取服务端认证授权信息
@@ -40,6 +43,6 @@ public class MyShiroWebModule extends ShiroWebModule {
         // TODO: 暂时性取消安全审核?
 //      addFilterChain("/dispatch/*", ANON);
 //        addFilterChain("/dispatch/*", ROLES, config(PERMS, "no"));
-        addFilterChain("/dispatch/*", MyAUTHC);
+        addFilterChain("/dispatch/**", MyAUTHC);
     }
 }
