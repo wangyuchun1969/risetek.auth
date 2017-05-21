@@ -30,6 +30,7 @@ public class SecurityBootstrapper implements Bootstrapper {
 	@Override
 	public void onBootstrap() {
 		if("/login.html".equals(Location.getPath())) {
+			String query = Location.getQueryString();
 			placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.auth).build());
 			return;
 		}

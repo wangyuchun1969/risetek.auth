@@ -18,8 +18,6 @@ public class MyShiroWebModule extends ShiroWebModule {
 
     @SuppressWarnings("unchecked")
 	protected void configureShiroWeb() {
-    	// 使用stormpath进行用户验证和授权。
-    	// bindRealm().to(MyApplicationRealm.class).asEagerSingleton();
     	// 使用本地方法进行用户验证和授权。
     	bindRealm().to(MyAuthorizingRealm.class).asEagerSingleton();
     	

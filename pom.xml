@@ -129,6 +129,11 @@
 			<artifactId>org.apache.oltu.oauth2.client</artifactId>
 			<version>${oltu.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.jwt</artifactId>
+			<version>${oltu.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

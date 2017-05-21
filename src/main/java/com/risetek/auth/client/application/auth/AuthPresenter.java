@@ -1,86 +1,53 @@
 package com.risetek.auth.client.application.auth;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.NoGatekeeper;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
-import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.place.NameTokens;
-import com.risetek.auth.client.security.CurrentUser;
-import com.risetek.auth.shared.AuthToken;
-import com.risetek.auth.shared.AuthorityInfo;
-import com.risetek.auth.shared.GetNoResult;
-import com.risetek.auth.shared.LogInOutAction;
 
-public class AuthPresenter extends
-		Presenter<AuthPresenter.MyView, AuthPresenter.MyProxy>
-		implements MyUiHandlers {
+public class AuthPresenter extends Presenter<AuthPresenter.MyView, AuthPresenter.MyProxy> implements MyUiHandlers {
 
 	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
-		public void setStatus(String status);
+		public void setClientID(String clientId);
+		public void reset();
 	}
 
-	@Inject
-	private CurrentUser user;
-	
 	@ProxyStandard
 	@NameToken(NameTokens.auth)
-    @NoGatekeeper
+	@NoGatekeeper
 	public interface MyProxy extends ProxyPlace<AuthPresenter> {
 	}
 
-	private final DispatchAsync dispatcher;
-    private final PlaceManager placeManager;
+	private final String callback_uri;
+	private final String client_id;
 
 	@Inject
-	public AuthPresenter(final EventBus eventBus, final MyView view,
-			final MyProxy proxy, DispatchAsync dispatcher,
-			PlaceManager placeManager) {
+	public AuthPresenter(final EventBus eventBus, final MyView view, final MyProxy proxy) {
 		super(eventBus, view, proxy, ApplicationPresenter.SLOT_SetMainContent);
-		this.dispatcher = dispatcher;
-		this.placeManager = placeManager;
-		Window.alert(Location.getQueryString());
+		client_id = Location.getParameter("client_id");
+		callback_uri = Location.getParameter("redirect_uri");
 		getView().setUiHandlers(this);
 	}
 
 	@Override
 	public void Login(String username, String password) {
-
-		AuthToken token = new AuthToken();
-		token.setUsername(username);
-		// TODO: encrypt it!
-		token.setPassword(password);
-		token.setRememberMe(true);
-
-		LogInOutAction action = new LogInOutAction(token);
-		getView().setStatus("获取用户权限...");
-
-		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				getView().setStatus("用户名或密码错误");
-			}
-
-			@Override
-			public void onSuccess(GetNoResult result) {
-				user.forceSync();
-			}
-		});
+		String url = GWT.getHostPageBaseURL()+"oauth/authorize?client_id=" + client_id + "&response_type=code" +"&redirect_uri=" + callback_uri;
+//		Location.assign(url);
+		Location.replace(url);
 	}
-	
+
 	@Override
 	public void onReset() {
-		super.onReset();
+		getView().reset();
+		getView().setClientID(client_id);
 	}
 }

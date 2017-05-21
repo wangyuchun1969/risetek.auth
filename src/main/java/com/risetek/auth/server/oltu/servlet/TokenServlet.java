@@ -19,6 +19,8 @@ import org.apache.oltu.oauth2.common.message.OAuthResponse;
 
 import com.google.inject.Singleton;
 
+
+// PATH /oauth/token
 @Singleton
 public class TokenServlet extends HttpServlet {
 
@@ -34,21 +36,23 @@ public class TokenServlet extends HttpServlet {
 		try {
 			oauthRequest = new OAuthTokenRequest(request);
 
-			// validateClient(oauthRequest);
-
-			String authzCode = oauthRequest.getCode();
+			validateClient(oauthRequest);
 
 			// some code
 			String accessToken = oauthIssuerImpl.accessToken();
 			String refreshToken = oauthIssuerImpl.refreshToken();
 
 			// some code
-			OAuthResponse r = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK).setAccessToken(accessToken)
+			OAuthResponse oauthResponse = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK).setAccessToken(accessToken)
 					.setExpiresIn("3600").setRefreshToken(refreshToken).buildJSONMessage();
 
-			response.setStatus(r.getResponseStatus());
+			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+			response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+			response.setDateHeader("Expires", 0); // Proxies.
+			
+			response.setStatus(oauthResponse.getResponseStatus());
 			PrintWriter pw = response.getWriter();
-			pw.print(r.getBody());
+			pw.print(oauthResponse.getBody());
 			pw.flush();
 			pw.close();
 			// if something goes wrong
@@ -75,6 +79,11 @@ public class TokenServlet extends HttpServlet {
 		}
 	}
 
+	private void validateClient(OAuthTokenRequest oauthTokenRequest) throws OAuthProblemException {
+		String authzCode = oauthTokenRequest.getCode();
+		System.out.println("code is:" + authzCode);
+	}
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());

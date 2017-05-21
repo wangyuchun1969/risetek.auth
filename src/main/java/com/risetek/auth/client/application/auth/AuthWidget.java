@@ -1,5 +1,6 @@
 package com.risetek.auth.client.application.auth;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -11,8 +12,10 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -23,8 +26,6 @@ public class AuthWidget extends SimplePanel {
 	public interface AuthSubmitHandle {
 		public void onSubmit(String username, String password);
 	}
-
-	private AuthSubmitHandle submitHandler;
 
 	private final AuthBundle.Style style = AuthBundle.resources.style();
 	private final FlowPanel backgroundPanel = new FlowPanel();
@@ -41,10 +42,28 @@ public class AuthWidget extends SimplePanel {
 	private Image user_img = new Image(AuthBundle.resources.user_png());
 	private Image password_img = new Image(AuthBundle.resources.password_png());
 	
+	private FormPanel formPanel = new FormPanel();
+	
 	private final Button loginSubmit = new Button();
 
+	public void doSumbit(String client_id, String callback_uri) {
+		String url = GWT.getHostPageBaseURL()+"oauth/authorize?client_id=" + client_id + "&response_type=code" +"&redirect_uri=" + callback_uri;
+		// "/oauth/authorize?client_id=" + client_id + "&response_type=code" +"&redirect_uri=" + callback_uri
+		formPanel.setAction(url);
+		Location.assign(url);
+		//formPanel.submit();
+	}
+	
+	
+	private final AuthSubmitHandle submitHandler;
+	
 	public AuthWidget(AuthSubmitHandle submitHandler) {
 		this.submitHandler = submitHandler;
+		
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.setEncoding(FormPanel.ENCODING_URLENCODED);
+		
+		formPanel.setAction(GWT.getHostPageBaseURL()+"oauth/authorize");
 		
 		loginSubmit.addClickHandler(new ClickHandler() {
 			@Override
@@ -65,8 +84,9 @@ public class AuthWidget extends SimplePanel {
 				}
 
 				loginSubmit.setText("登录中...");
-				AuthWidget.this.submitHandler.onSubmit(
-						username_input_box.getValue(), password_input_box.getValue());
+				
+				// formPanel.submit();
+				AuthWidget.this.submitHandler.onSubmit("username", "password");
 			}
 		});
 
@@ -74,11 +94,6 @@ public class AuthWidget extends SimplePanel {
 		setStyleName("loginWidget");
 		backgroundPanel.setStyleName(style.background());
 
-		Element div = DOM.createDiv();
-		Element span = DOM.createSpan();
-		span.setInnerHTML("授&nbsp;权");
-		div.setInnerHTML(span.getString());
-		title.getElement().setInnerHTML(div.getString());
 		title.setStyleName(style.topTitle());
 		backgroundPanel.add(title);
 
@@ -87,6 +102,10 @@ public class AuthWidget extends SimplePanel {
 		internval0.setClassName(style.interval());
 		backgroundPanel.getElement().appendChild(internval0);
 
+		formPanel.setSize("100%", "100%");
+		formPanel.getElement().getStyle().setBackgroundColor("red");
+		backgroundPanel.add(formPanel);
+		
 		// --- USERNAME BOX -----
 		username_flowpanel.setStyleName(style.box_outer());
 		username_flowpanel.addStyleName(style.box_outer_border());
@@ -136,7 +155,9 @@ public class AuthWidget extends SimplePanel {
 		});
 
 		username_input_box.setStyleName(style.box_input_area());
-		backgroundPanel.add(username_flowpanel);
+		//backgroundPanel.add(username_flowpanel);
+		formPanel.add(username_flowpanel);
+		
 
 		username_input_box.getElement().setPropertyString("placeholder",
 				"请输入用户名");
@@ -212,7 +233,7 @@ public class AuthWidget extends SimplePanel {
 	}
 
 	protected void onLoad() {
-		reset();
+//		reset();
 		password_input_box.setText(null);
 		username_input_box.setFocus(true);
 	}
@@ -225,5 +246,13 @@ public class AuthWidget extends SimplePanel {
 		loginSubmit.setText("登录");
 		password_tips.getElement().getStyle().setDisplay(Display.NONE);
 		username_tips.getElement().getStyle().setDisplay(Display.NONE);
+	}
+
+	public void setClientID(String clientId) {
+		Element span = DOM.createSpan();
+		Element div = DOM.createDiv();
+		span.setInnerHTML("授&nbsp;权:&nbsp;" + clientId);
+		div.setInnerHTML(span.getString());
+		title.getElement().setInnerHTML(div.getString());
 	}
 }

@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 
-class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter.MyView {
+class AuthView2 extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter.MyView {
 	private final AuthBundle.Style style = AuthBundle.resources.style();
 	private final SimplePanel titlePanel = new SimplePanel();
 
@@ -160,7 +160,7 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 	}
 	
     @Inject
-    public AuthView() {
+    public AuthView2() {
     	style.ensureInjected();
 		FlowPanel flowPanel = new FlowPanel();
         
@@ -201,7 +201,7 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 				}
 
 				loginSubmit.setText("登录中...");
-				AuthView.this.getUiHandlers().Login(username_box.getValue(), password_box.getValue());
+				AuthView2.this.getUiHandlers().Login(username_box.getValue(), password_box.getValue());
 			}
 		});
 		flowPanel.add(loginSubmit);

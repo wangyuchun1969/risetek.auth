@@ -1,6 +1,7 @@
 package com.risetek.auth.server.oltu.servlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,11 +18,14 @@ import org.apache.oltu.oauth2.common.message.OAuthResponse;
 
 import com.google.inject.Singleton;
 
+
+// PATH /oauth/authorize
 @Singleton
 public class AuthorizeServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -1969643036046255438L;
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -39,6 +43,71 @@ public class AuthorizeServlet extends HttpServlet {
 						.setCode(oauthIssuerImpl.authorizationCode()).location(oauthRequest.getRedirectURI())
 						.buildQueryMessage();
 
+				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+				response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+				response.setDateHeader("Expires", 0); // Proxies.
+				
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				
+				System.out.println("call authorize get");
+
+				Enumeration<String> strings = request.getParameterNames();
+				while(strings.hasMoreElements())
+					System.out.println("params: " + strings.nextElement());
+				
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				
+				response.sendRedirect(resp.getLocationUri());
+				// if something goes wrong
+			} catch (OAuthProblemException ex) {
+				OAuthResponse resp = OAuthASResponse.errorResponse(HttpServletResponse.SC_FOUND).error(ex)
+						.location(ex.getRedirectUri()).buildQueryMessage();
+				response.sendRedirect(resp.getLocationUri());
+			}
+		} catch (OAuthSystemException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		try {
+			try {
+				// dynamically recognize an OAuth profile based on request
+				// characteristic (params, method, content type etc.), perform
+				// validation
+				OAuthAuthzRequest oauthRequest = new OAuthAuthzRequest(request);
+				OAuthIssuerImpl oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
+				// validateRedirectionURI(oauthRequest)
+
+				// build OAuth response
+				OAuthResponse resp = OAuthASResponse.authorizationResponse(request, HttpServletResponse.SC_FOUND)
+						.setCode(oauthIssuerImpl.authorizationCode()).location(oauthRequest.getRedirectURI())
+						.buildQueryMessage();
+
+				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+				response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+				response.setDateHeader("Expires", 0); // Proxies.
+
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				
+				Enumeration<String> strings = request.getParameterNames();
+				while(strings.hasMoreElements())
+					System.out.println("params: " + strings.nextElement());
+				
+				System.out.println("call authorize post");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+				
 				response.sendRedirect(resp.getLocationUri());
 
 				// if something goes wrong
@@ -51,4 +120,5 @@ public class AuthorizeServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+
 }
