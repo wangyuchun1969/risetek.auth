@@ -17,7 +17,9 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.server.UserManagement;
 
 
 // PATH /oauth/token
@@ -25,27 +27,39 @@ import com.google.inject.Singleton;
 public class TokenServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -6683598824382339693L;
+	
+	@Inject
+	private UserManagement userManagement;
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		OAuthTokenRequest oauthRequest = null;
-
 		OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 
 		try {
-			oauthRequest = new OAuthTokenRequest(request);
+			OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
 
-			validateClient(oauthRequest);
+			String authzCode = oauthRequest.getCode();
+			System.out.println("code is:" + authzCode);
+			
+			String username = userManagement.getUsernameByToken(authzCode);
+			if(null == username) {
+				System.out.println("can't find authzCode: " + authzCode);
+				throw OAuthProblemException.error("invalid client token");
+			}
 
 			// some code
 			String accessToken = oauthIssuerImpl.accessToken();
 			String refreshToken = oauthIssuerImpl.refreshToken();
+			System.out.println("accessToken is:" + accessToken + " username:" + username);
 
+			userManagement.setAccessToken(username, accessToken);
+			
 			// some code
 			OAuthResponse oauthResponse = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK).setAccessToken(accessToken)
 					.setExpiresIn("3600").setRefreshToken(refreshToken).buildJSONMessage();
 
+			response.setContentType("application/json");
 			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
 			response.setHeader("Pragma", "no-cache"); // HTTP 1.0
 			response.setDateHeader("Expires", 0); // Proxies.
@@ -56,9 +70,7 @@ public class TokenServlet extends HttpServlet {
 			pw.flush();
 			pw.close();
 			// if something goes wrong
-
 		} catch (OAuthProblemException | OAuthSystemException ex) {
-
 			OAuthProblemException pro = OAuthProblemException.error("somethign");
 			OAuthResponse r;
 			try {
@@ -79,28 +91,8 @@ public class TokenServlet extends HttpServlet {
 		}
 	}
 
-	private void validateClient(OAuthTokenRequest oauthTokenRequest) throws OAuthProblemException {
-		String authzCode = oauthTokenRequest.getCode();
-		System.out.println("code is:" + authzCode);
-	}
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
-
-		try {
-			OAuthResponse r = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
-					.setAccessToken(oauthIssuerImpl.accessToken()).setExpiresIn("3600").buildJSONMessage();
-
-			response.setStatus(r.getResponseStatus());
-			PrintWriter pw = response.getWriter();
-			pw.print(r.getBody());
-			pw.flush();
-			pw.close();
-
-		} catch (OAuthSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		doPost(request, response);
 	}
 }

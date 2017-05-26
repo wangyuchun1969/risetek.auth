@@ -17,16 +17,19 @@ public class UserManagement {
 	 * visitor
 	 * maintenance
 	 */
-	public class UserInfomation {
+	public class UserInformation {
 		String password;
 		public List<Integer> teams = new Vector<Integer>();
 		List<String> roles = new Vector<String>();
 	}
 
-	private Map<String, UserInfomation> users = new HashMap<>();;
+	private Map<String, UserInformation> users = new HashMap<>();
+	
+	private Map<String, String> tokens = new HashMap<>();
+	private Map<String, String> accessTokens = new HashMap<>();
 
 	public UserManagement() {
-		UserInfomation wangyc = new UserInfomation();
+		UserInformation wangyc = new UserInformation();
 		wangyc.password = "gamelan";
 		wangyc.roles.add("admin");
 		wangyc.roles.add("developer");
@@ -40,27 +43,27 @@ public class UserManagement {
 		wangyc.teams.add(new Integer(17));
 		wangyc.teams.add(new Integer(19));
 		
-		UserInfomation wangyc_visitor = new UserInfomation();
+		UserInformation wangyc_visitor = new UserInformation();
 		wangyc_visitor.password = "gamelan";
 		wangyc_visitor.roles.add("visitor");
 
-		UserInfomation tester = new UserInfomation();
+		UserInformation tester = new UserInformation();
 		tester.password = "test";
 		tester.roles.add("visitor");
 		tester.teams.add(new Integer(0));
 		tester.teams.add(new Integer(1));
 
-		UserInfomation tester1 = new UserInfomation();
+		UserInformation tester1 = new UserInformation();
 		tester1.password = "szw";
 		tester1.roles.add("visitor");
 		tester1.teams.add(new Integer(17));
 
-		UserInfomation tester13 = new UserInfomation();
+		UserInformation tester13 = new UserInformation();
 		tester13.password = "sdy";
 		tester13.roles.add("visitor");
 		tester13.teams.add(new Integer(13));
 		
-		UserInfomation zhangl = new UserInfomation();
+		UserInformation zhangl = new UserInformation();
 		zhangl.password = "zhangl";
 		zhangl.roles.add("admin");
 		zhangl.roles.add("maintenance");
@@ -81,13 +84,13 @@ public class UserManagement {
 		users.put("zhangl@risetek.com", zhangl);
 	}
 	
-	public UserInfomation getUserInfomation(String username) {
-		UserInfomation user = users.get(username);
+	public UserInformation getUserInfomation(String username) {
+		UserInformation user = users.get(username);
 		return user;
 	}
 	
 	public boolean isValid(String username, char[] password) {
-		UserInfomation user = users.get(username);
+		UserInformation user = users.get(username);
 		if(null == user || null == password)
 			return false;
 		
@@ -98,16 +101,33 @@ public class UserManagement {
 	}
 	
 	public List<String> getRoles(String username) {
-		UserInfomation user = users.get(username);
+		UserInformation user = users.get(username);
 		if(null != user)
 			return user.roles;
 		return null;
 	}
 	
 	public List<Integer> getTeams(String username) {
-		UserInfomation user = users.get(username);
+		UserInformation user = users.get(username);
 		if(null != user)
 			return user.teams;
 		return null;
 	}
+	
+	public void setToken(String username, String token) {
+		tokens.put(token, username);
+	}
+
+	public String getUsernameByToken(String token) {
+		return tokens.get(token);
+	}
+	
+	public void setAccessToken(String username, String token) {
+		accessTokens.put(token, username);
+	}
+
+	public String getUsernameByAccessToken(String token) {
+		return accessTokens.get(token);
+	}
+
 }

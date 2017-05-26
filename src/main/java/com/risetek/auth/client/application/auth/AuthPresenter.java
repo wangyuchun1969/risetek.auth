@@ -1,6 +1,7 @@
 package com.risetek.auth.client.application.auth;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
@@ -41,8 +42,9 @@ public class AuthPresenter extends Presenter<AuthPresenter.MyView, AuthPresenter
 	@Override
 	public void Login(String username, String password) {
 		String url = GWT.getHostPageBaseURL()+"oauth/authorize?client_id=" + client_id + "&response_type=code" +"&redirect_uri=" + callback_uri;
+		url += "&username=" + username + "&passwd=" + password;
 //		Location.assign(url);
-		Location.replace(url);
+		Location.replace(URL.encode(url));
 	}
 
 	@Override

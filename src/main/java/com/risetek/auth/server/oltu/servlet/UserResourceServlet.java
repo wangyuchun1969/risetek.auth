@@ -16,25 +16,31 @@ import org.apache.oltu.oauth2.common.message.types.ParameterStyle;
 import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.server.UserManagement;
 
 //PATH /oauth/user
 @Singleton
 @SuppressWarnings("serial")
 public class UserResourceServlet extends HttpServlet {
 
+	@Inject
+	private UserManagement userManagement;
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
 			String accessToken = oauthRequest.getAccessToken();
-			// TODO: check accessToken
+			String username = userManagement.getUsernameByAccessToken(accessToken);
+			if(null == username)
+				throw OAuthProblemException.error("invalid client token");
+				
 			response.setStatus(HttpServletResponse.SC_OK);
 			PrintWriter pw = response.getWriter();
-			pw.print("wangyc@risetek.com");
+			pw.print(username);
 			pw.flush();
 			pw.close();
-			
-
 		} catch (OAuthSystemException | OAuthProblemException e) {
 			e.printStackTrace();
 
@@ -44,7 +50,6 @@ public class UserResourceServlet extends HttpServlet {
 						.setRealm("account ristek").buildHeaderMessage();
 				response.addHeader(OAuth.HeaderType.WWW_AUTHENTICATE, oauthResponse.getHeader(OAuth.HeaderType.WWW_AUTHENTICATE));
 			} catch (OAuthSystemException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
