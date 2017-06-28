@@ -36,12 +36,7 @@ public class UserManagement {
 		wangyc.roles.add("maintenance");
 		wangyc.roles.add("operator");
 		wangyc.roles.add("visitor");
-		wangyc.teams.add(new Integer(0));
-		wangyc.teams.add(new Integer(1));
-		wangyc.teams.add(new Integer(2));
-		wangyc.teams.add(new Integer(13));
-		wangyc.teams.add(new Integer(17));
-		wangyc.teams.add(new Integer(19));
+		wangyc.teams.add(new Integer(-1));
 		
 		UserInformation wangyc_visitor = new UserInformation();
 		wangyc_visitor.password = "gamelan";
@@ -51,7 +46,6 @@ public class UserManagement {
 		tester.password = "test";
 		tester.roles.add("visitor");
 		tester.teams.add(new Integer(0));
-		tester.teams.add(new Integer(1));
 
 		UserInformation tester1 = new UserInformation();
 		tester1.password = "szw";
@@ -69,12 +63,15 @@ public class UserManagement {
 		zhangl.roles.add("maintenance");
 		zhangl.roles.add("operator");
 		zhangl.roles.add("visitor");
-		zhangl.teams.add(new Integer(0));
-		zhangl.teams.add(new Integer(1));
-		zhangl.teams.add(new Integer(2));
-		zhangl.teams.add(new Integer(13));
-		zhangl.teams.add(new Integer(17));
-		zhangl.teams.add(new Integer(19));
+		zhangl.teams.add(new Integer(-1));
+
+		UserInformation wangx = new UserInformation();
+		wangx.password = "wangxu";
+		wangx.roles.add("admin");
+		wangx.roles.add("maintenance");
+		wangx.roles.add("operator");
+		wangx.roles.add("visitor");
+		wangx.teams.add(new Integer(-1));
 		
 		users.put("wangyc", wangyc_visitor);
 		users.put("wangyc@risetek.com", wangyc);
@@ -82,6 +79,7 @@ public class UserManagement {
 		users.put("szw@risetek.com", tester1);
 		users.put("sdy@risetek.com", tester13);
 		users.put("zhangl@risetek.com", zhangl);
+		users.put("wangxu@risetek.com", wangx);
 	}
 	
 	public UserInformation getUserInfomation(String username) {
@@ -91,7 +89,7 @@ public class UserManagement {
 	
 	public boolean isValid(String username, char[] password) {
 		UserInformation user = users.get(username);
-		if(null == user || null == password)
+		if(null == user || null == password || null == user.password)
 			return false;
 		
 		if(Arrays.equals(password, user.password.toCharArray()))
