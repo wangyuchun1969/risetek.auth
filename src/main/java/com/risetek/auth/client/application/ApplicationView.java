@@ -46,6 +46,7 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
         head_black.add(logo);
         head_black.setCellWidth(logo, "220px");
         
+        /*
         head_black.add(total_users);
         total_users.setStyleName(style.clients());
         head_black.setCellWidth(total_users, "80px");
@@ -55,7 +56,8 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
         SocketSlot.setStyleName(style.builder());
         head_black.setCellWidth(SocketSlot, "400px");
         head_black.setCellHorizontalAlignment(SocketSlot, HorizontalPanel.ALIGN_LEFT);
-
+		*/
+        
         head_black.add(menuSlot);
         menuSlot.setStyleName(style.menuSolt());
         head_black.setCellHorizontalAlignment(menuSlot, HorizontalPanel.ALIGN_RIGHT);
