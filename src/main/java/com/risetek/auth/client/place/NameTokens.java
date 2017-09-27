@@ -6,4 +6,5 @@ public class NameTokens {
     public static final String login = "!login";
     public static final String auth = "!auth";
     public static final String about = "!about";
+    public static final String security = "!security";
 }
