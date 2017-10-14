@@ -50,7 +50,8 @@ public class DbManagement {
 
 	public List<UserSecurityEntity> getAllUserSecurity(int offset, int limit) throws SQLException {
 		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
-		String sql = "SELECT id, name, passwd, notes FROM security;";
+		String sql = "SELECT id, name, passwd, notes FROM security" + " OFFSET " + offset + " LIMIT " + limit + ";";
+		//System.out.println("DEBUG:" + sql);
 		Statement stmt = c.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {

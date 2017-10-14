@@ -11,7 +11,9 @@ import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
+import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.CurrentUser;
@@ -25,6 +27,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
     	void showUserInfo(String info);
     }
 
+    private PlaceManager placeManager;
     @Inject
     private CurrentUser user;
     
@@ -38,8 +41,10 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
     HomePresenter(
             EventBus eventBus,
             MyView view,
+            PlaceManager placeManager,
             MyProxy proxy) {
         super(eventBus, view, proxy, ApplicationPresenter.SLOT_SetMainContent);
+        this.placeManager = placeManager;
         getView().setUiHandlers(this);
     }
 
@@ -63,5 +68,10 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
     	super.onReset();
     	upDateUser();
     }
+
+	@Override
+	public void gotoSecurity() {
+		placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.security).build());
+	}
 	
 }

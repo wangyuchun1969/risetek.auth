@@ -9,8 +9,10 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.AuthorityChangedEvent;
 import com.risetek.auth.client.AuthorityChangedEvent.AuthorityChangedHandler;
+import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.shared.AuthorityAction;
 import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetResult;
@@ -51,8 +53,10 @@ public class CurrentUser implements AuthorityChangedHandler {
 				setAuthorityInfo(result.getResults());
 
 				// Goto Place default
-				if(!currentAuthorityInfo.isLogin())
+//				if(!currentAuthorityInfo.isLogin())
 					placeManager.revealDefaultPlace();
+				
+//				placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.HOME).build());
 			}});
     }
 

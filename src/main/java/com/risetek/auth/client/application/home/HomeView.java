@@ -3,6 +3,9 @@ package com.risetek.auth.client.application.home;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -13,15 +16,24 @@ import com.risetek.auth.client.generator.IBuilderStamp;
 public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePresenter.MyView {
 
     private SimplePanel panel = new SimplePanel();
-    
+    private Button securityButton = new Button("Security");
     @Inject
     HomeView() {
 		FlowPanel flows = new FlowPanel();
         initWidget(flows);
         
         flows.add(panel);
+        flows.add(securityButton);
+        
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());
+		
+		securityButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				getUiHandlers().gotoSecurity();
+			}});
     }
 
 	private Widget createBootMark() {
