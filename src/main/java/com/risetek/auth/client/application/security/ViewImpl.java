@@ -65,6 +65,14 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		celltable.addColumn(ident_Column, "用户名");
 		celltable.setColumnWidth(ident_Column, 160, Unit.PX);
 	
+		NullFilledTextColumn notes_Column = new NullFilledTextColumn() {
+			@Override
+			public String getValue(UserSecurityEntity object) {
+				return object.getNotes();
+			}
+		};
+		celltable.addColumn(notes_Column, "备注");
+		// celltable.setColumnWidth(ident_Column, 160, Unit.PX);
 
 		// ------------------------------------------------------------------
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -123,5 +131,10 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 			else
 				super.render(context, object, sb);
 		}
+	}
+
+	@Override
+	public int getPageSize() {
+		return celltable.getPageSize();
 	}
 }

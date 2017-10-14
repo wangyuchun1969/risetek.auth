@@ -30,6 +30,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 	
     public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
     	void showUsers(List<UserSecurityEntity> users);
+		public int getPageSize();
     }
 
     @ProxyStandard
@@ -57,7 +58,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 
 	@Override
 	public void ListUsers() {
-		DatabaseSecurityQueryAction action = new DatabaseSecurityQueryAction();
+		DatabaseSecurityQueryAction action = new DatabaseSecurityQueryAction(currentPage * getView().getPageSize(), getView().getPageSize()+1);
 		
 		dispatcher.execute(action, new AsyncCallback<GetResults<UserSecurityEntity>>() {
 			@Override
@@ -90,6 +91,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 		});
 	}
 
+	private int currentPage = 0;
 	@Override
 	public void onPager(int pages) {
 		// TODO Auto-generated method stub

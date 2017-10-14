@@ -22,7 +22,7 @@ public class DatabaseSecurityQueryActionHandler implements ActionHandler<Databas
 			throws ActionException {
 		List<UserSecurityEntity> users = null;
 		try {
-			users = dbManagement.getAllUserSecurity();
+			users = dbManagement.getAllUserSecurity(action.offset, action.limit);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

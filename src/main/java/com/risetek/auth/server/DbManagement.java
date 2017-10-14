@@ -48,7 +48,7 @@ public class DbManagement {
 		stmt.close();
 	}
 
-	public List<UserSecurityEntity> getAllUserSecurity() throws SQLException {
+	public List<UserSecurityEntity> getAllUserSecurity(int offset, int limit) throws SQLException {
 		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
 		String sql = "SELECT id, name, passwd, notes FROM security;";
 		Statement stmt = c.createStatement();
@@ -89,7 +89,7 @@ public class DbManagement {
 			
 			// addUserSecurity(user);
 			
-			List<UserSecurityEntity> securitys = getAllUserSecurity();
+			List<UserSecurityEntity> securitys = getAllUserSecurity(0, 100);
 			for(UserSecurityEntity u:securitys)
 				System.out.println("[" + u.getId() + "]-->> user:" + u.getUsername() + "  passwd:" + u.getPasswd() + " notes:" + u.getNotes());
 			
