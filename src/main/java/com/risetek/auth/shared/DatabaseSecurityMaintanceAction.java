@@ -5,9 +5,9 @@ import com.gwtplatform.dispatch.rpc.shared.UnsecuredActionImpl;
 public class DatabaseSecurityMaintanceAction extends UnsecuredActionImpl<GetNoResult> {
 	public enum Operator {INSERT, DELETE};
 	
-	public UserSecurity security;
+	public UserSecurityEntity security;
 	public Operator operator;
-	public DatabaseSecurityMaintanceAction(UserSecurity security, Operator operator){
+	public DatabaseSecurityMaintanceAction(UserSecurityEntity security, Operator operator){
 		this.operator  = operator;
 		this.security = security;
 	}

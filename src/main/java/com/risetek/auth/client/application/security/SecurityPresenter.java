@@ -23,13 +23,13 @@ import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
 import com.risetek.auth.shared.DatabaseSecurityQueryAction;
 import com.risetek.auth.shared.GetResults;
-import com.risetek.auth.shared.UserSecurity;
+import com.risetek.auth.shared.UserSecurityEntity;
 
 public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, SecurityPresenter.MyProxy>
 	implements MyUiHandlers {
 	
     public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
-    	void showUsers(List<UserSecurity> users);
+    	void showUsers(List<UserSecurityEntity> users);
     }
 
     @ProxyStandard
@@ -59,9 +59,9 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 	public void ListUsers() {
 		DatabaseSecurityQueryAction action = new DatabaseSecurityQueryAction();
 		
-		dispatcher.execute(action, new AsyncCallback<GetResults<UserSecurity>>() {
+		dispatcher.execute(action, new AsyncCallback<GetResults<UserSecurityEntity>>() {
 			@Override
-			public void onSuccess(GetResults<UserSecurity> result) {
+			public void onSuccess(GetResults<UserSecurityEntity> result) {
 				getView().showUsers(result.getResults());
 			}
 
@@ -88,5 +88,16 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onPager(int pages) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void refreshPages(boolean isResized, boolean forceLoad) {
+		ListUsers();
 	}
 }

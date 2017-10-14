@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.google.inject.Singleton;
-import com.risetek.auth.shared.UserSecurity;
+import com.risetek.auth.shared.UserSecurityEntity;
 /*
  * 基于hsqldb的用户及用户资源管理
  * 数据库初始化
@@ -29,7 +29,7 @@ public class DbManagement {
 	public DbManagement() {
 		
 		try {
-			c = DriverManager.getConnection("jdbc:hsqldb:file:./db/userdb", "SA", "");
+			c = DriverManager.getConnection("jdbc:hsqldb:file:/risetek/userdb", "SA", "");
 			System.out.println("!!!!!!!!!! ---------------- connection successed ---------------- !!!!!!!!!!!!!!!!!!");
 			c.setAutoCommit(true);
 			
@@ -48,13 +48,13 @@ public class DbManagement {
 		stmt.close();
 	}
 
-	public List<UserSecurity> getAllUserSecurity() throws SQLException {
-		List<UserSecurity> securitys = new Vector<UserSecurity>();
+	public List<UserSecurityEntity> getAllUserSecurity() throws SQLException {
+		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
 		String sql = "SELECT id, name, passwd, notes FROM security;";
 		Statement stmt = c.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
-			UserSecurity security = new UserSecurity();
+			UserSecurityEntity security = new UserSecurityEntity();
 			security.setId(rs.getInt("id"));
 			security.setUsername(rs.getString("name"));
 			security.setPasswd(rs.getString("passwd"));
@@ -65,7 +65,7 @@ public class DbManagement {
 		stmt.close();
 		return securitys;
 	}
-	public void addUserSecurity(UserSecurity security) throws SQLException {
+	public void addUserSecurity(UserSecurityEntity security) throws SQLException {
 		String sql = "INSERT INTO security (name,passwd,notes) VALUES(?,?,?);";
 		// create the java mysql update preparedstatement
 		PreparedStatement preparedStmt = c.prepareStatement(sql);
@@ -82,15 +82,15 @@ public class DbManagement {
 		try {
 			init_db();
 			
-			UserSecurity user = new UserSecurity();
+			UserSecurityEntity user = new UserSecurityEntity();
 			user.setUsername("wangyc2@risetek.com");
 			user.setPasswd("risetek");
 			user.setNotes("wangyuchun1969");
 			
 			// addUserSecurity(user);
 			
-			List<UserSecurity> securitys = getAllUserSecurity();
-			for(UserSecurity u:securitys)
+			List<UserSecurityEntity> securitys = getAllUserSecurity();
+			for(UserSecurityEntity u:securitys)
 				System.out.println("[" + u.getId() + "]-->> user:" + u.getUsername() + "  passwd:" + u.getPasswd() + " notes:" + u.getNotes());
 			
 		} catch (SQLException e) {

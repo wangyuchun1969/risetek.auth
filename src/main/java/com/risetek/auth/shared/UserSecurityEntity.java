@@ -2,7 +2,7 @@ package com.risetek.auth.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class UserSecurity implements IsSerializable {
+public class UserSecurityEntity implements IsSerializable {
 	public int getId() {
 		return id;
 	}

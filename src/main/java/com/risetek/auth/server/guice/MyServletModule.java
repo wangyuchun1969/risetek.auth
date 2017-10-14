@@ -4,6 +4,7 @@ import org.apache.shiro.guice.web.GuiceShiroFilter;
 
 import com.google.inject.servlet.ServletModule;
 import com.gwtplatform.dispatch.rpc.server.guice.DispatchServiceImpl;
+import com.risetek.auth.server.DbManagement;
 import com.risetek.auth.server.oltu.servlet.AuthorizeServlet;
 import com.risetek.auth.server.oltu.servlet.TokenServlet;
 import com.risetek.auth.server.oltu.servlet.UserResourceServlet;
@@ -17,5 +18,7 @@ public class MyServletModule extends ServletModule {
 		serve("/oauth/user").with(UserResourceServlet.class);
 		//shiro filter
         filter("/dispatch/*").through(GuiceShiroFilter.class);
+        
+        bind(DbManagement.class).asEagerSingleton();
 	}
 }

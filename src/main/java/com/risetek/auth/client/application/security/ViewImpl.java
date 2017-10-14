@@ -4,64 +4,124 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.risetek.auth.client.generator.IBuilderStamp;
-import com.risetek.auth.shared.UserSecurity;
+import com.risetek.auth.shared.UserSecurityEntity;
 
-public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements SecurityPresenter.MyView {
+public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements SecurityPresenter.MyView, ResizeHandler {
+	private final DockLayoutPanel frameDocker = new DockLayoutPanel(Unit.PX);
+	private final ResizeLayoutPanel resizePanel = new ResizeLayoutPanel();
+	private final SimplePanel pagerSlotPanel = new SimplePanel();
+	private final ListDataProvider<UserSecurityEntity> dataprovider;
+	private final NoSelectionModel<UserSecurityEntity> selectionModel = new NoSelectionModel<UserSecurityEntity>();
 
-    private SimplePanel panel = new SimplePanel();
-    private Button button = new Button("clickme");
+	private final CellTable<UserSecurityEntity> celltable = new CellTable<UserSecurityEntity>(10, TableResources.resources) {
+		@Override
+		protected void onBrowserEvent2(Event event) {
+			super.onBrowserEvent2(event);
+			
+			if(event.getTypeInt() == Event.ONMOUSEWHEEL) {
+				if(event.getMouseWheelVelocityY() > 0) {
+					getUiHandlers().onPager(1);
+				} else {
+					getUiHandlers().onPager(-1);
+				}
+			}
+		}
+		
+		// Override getKeyboardSelectedElement,
+		// so when we change page, the focus should be lost.
+		@Override
+		protected Element getKeyboardSelectedElement() {
+			return null;
+		}
+	};
     
+	private void initTable() {
+		dataprovider.addDataDisplay(celltable);
+		celltable.setSize("100%", "100%");
+
+		NullFilledTextColumn ident_Column = new NullFilledTextColumn() {
+			@Override
+			public String getValue(UserSecurityEntity object) {
+				return object.getUsername();
+			}
+		};
+		celltable.addColumn(ident_Column, "用户名");
+		celltable.setColumnWidth(ident_Column, 160, Unit.PX);
+	
+
+		// ------------------------------------------------------------------
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				// getUiHandlers().showChart(selectionModel.getLastSelectedObject().getBaseInfo());
+			}
+		});
+		
+		celltable.setSelectionModel(selectionModel);
+		celltable.sinkEvents(Event.ONCLICK);
+		celltable.sinkEvents(Event.ONMOUSEWHEEL);
+		celltable.setTableLayoutFixed(true);
+	}
+	
     @Inject
-    ViewImpl() {
-		FlowPanel flows = new FlowPanel();
-        initWidget(flows);
-        
-        flows.add(panel);
-		// boot mark, copyright, etc.
-		flows.add(createBootMark());
+    ViewImpl(final EventBus eventBus, ListDataProvider<UserSecurityEntity> dataProvider) {
+		dataprovider = dataProvider;
+		frameDocker.setSize("100%", "100%");
+		initWidget(frameDocker);
+		pagerSlotPanel.setSize("100%", "100%");
+		frameDocker.addSouth(pagerSlotPanel, 30);
+		resizePanel.setSize("100%", "100%");
+		resizePanel.addResizeHandler(this);
+		initTable();
+		resizePanel.add(celltable);
+		frameDocker.add(resizePanel);
     }
 
-	private Widget createBootMark() {
-		SimplePanel wrapPanel = new SimplePanel();
-		FlowPanel bottomPanel = new FlowPanel();
-		
-		IBuilderStamp stamp = GWT.create(IBuilderStamp.class);
-		HTML buildTimestamp = new HTML(stamp.getBuilderStamp());
+	@Override
+	public void showUsers(List<UserSecurityEntity> users) {
+		int filled = users.size() % celltable.getPageSize();
+		if(filled != 0) {
+			filled = celltable.getPageSize() - filled;
+			for (int looper = 0; looper < filled; looper++)
+				users.add(null);
+		}
 
-		wrapPanel.getElement().setPropertyString("align", "center");
-
-		wrapPanel.add(bottomPanel);
-
-		bottomPanel.add(new HTML("成都瑞科技术有限公司版权所有"));
-		bottomPanel.add(buildTimestamp);
-		
-		button.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				getUiHandlers().ListUsers();
-			}});
-		
-		bottomPanel.add(button);
-		return wrapPanel;
+		dataprovider.setList(users);
 	}
 
+	// TODO: 这个高度是与CSS相关的。
+	private final int cellHeight = 26;
 	@Override
-	public void showUsers(List<UserSecurity> users) {
-		panel.clear();
-		FlowPanel lists = new FlowPanel();
-		panel.add(lists);
-		for(UserSecurity u:users)
-			lists.add(new HTML(u.getUsername()));
+	public void onResize(ResizeEvent event) {
+		int offsetHeight = event.getHeight() - celltable.getHeaderHeight();
+		celltable.setPageSize(offsetHeight / cellHeight);
+		getUiHandlers().refreshPages(true, false);
+	}
+
+	private abstract class NullFilledTextColumn extends TextColumn<UserSecurityEntity> {
+		@Override
+		public void render(Context context, UserSecurityEntity object, SafeHtmlBuilder sb) {
+			if(object == null)
+				sb.appendHtmlConstant("&nbsp;");
+			else
+				super.render(context, object, sb);
+		}
 	}
 }

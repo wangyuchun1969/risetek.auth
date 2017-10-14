@@ -10,23 +10,23 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import com.risetek.auth.server.DbManagement;
 import com.risetek.auth.shared.DatabaseSecurityQueryAction;
 import com.risetek.auth.shared.GetResults;
-import com.risetek.auth.shared.UserSecurity;
+import com.risetek.auth.shared.UserSecurityEntity;
 
-public class DatabaseSecurityQueryActionHandler implements ActionHandler<DatabaseSecurityQueryAction, GetResults<UserSecurity>> {
+public class DatabaseSecurityQueryActionHandler implements ActionHandler<DatabaseSecurityQueryAction, GetResults<UserSecurityEntity>> {
 
 	@Inject
 	private DbManagement dbManagement;
 
 	@Override
-	public GetResults<UserSecurity> execute(DatabaseSecurityQueryAction action, ExecutionContext context)
+	public GetResults<UserSecurityEntity> execute(DatabaseSecurityQueryAction action, ExecutionContext context)
 			throws ActionException {
-		List<UserSecurity> users = null;
+		List<UserSecurityEntity> users = null;
 		try {
 			users = dbManagement.getAllUserSecurity();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new GetResults<UserSecurity>(users);
+		return new GetResults<UserSecurityEntity>(users);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class DatabaseSecurityQueryActionHandler implements ActionHandler<Databas
 	}
 
 	@Override
-	public void undo(DatabaseSecurityQueryAction action, GetResults<UserSecurity> result, ExecutionContext context)
+	public void undo(DatabaseSecurityQueryAction action, GetResults<UserSecurityEntity> result, ExecutionContext context)
 			throws ActionException {
 	}
 	
