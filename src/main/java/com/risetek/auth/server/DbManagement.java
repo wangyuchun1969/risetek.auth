@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.google.inject.Singleton;
+import com.risetek.auth.shared.UserResourceEntity;
 import com.risetek.auth.shared.UserSecurityEntity;
 /*
  * 基于hsqldb的用户及用户资源管理
@@ -18,47 +19,71 @@ import com.risetek.auth.shared.UserSecurityEntity;
  */
 @Singleton
 public class DbManagement {
-	private final String createTable = "CREATE TABLE IF NOT EXISTS security (" +
+	private final String createSecurityTable = "CREATE TABLE IF NOT EXISTS security (" +
 			" id IDENTITY," + 
 			" name VARCHAR(40) NOT NULL UNIQUE," + 
 			" passwd VARCHAR(60) NOT NULL," + 
+			" email VARCHAR(100) NOT NULL," + 
 			" notes VARCHAR(600)," + 
 			");";
 	
-	private Connection c;
+	private final String createResourceTable = "CREATE TABLE IF NOT EXISTS resource (" +
+			" id IDENTITY," + 
+			" securityId INT NOT NULL FOREIGN KEY REFERENCES security(id)," + 
+			" appId INT NOT NULL," + 
+			" json VARCHAR(60) NOT NULL," + 
+			" UNIQUE(securityId, appId)," +
+			");";
+
+	private Connection connection;
 	public DbManagement() {
-		
 		try {
-			c = DriverManager.getConnection("jdbc:hsqldb:file:/risetek/userdb", "SA", "");
+			connection = DriverManager.getConnection("jdbc:hsqldb:file:/risetek/userdb", "SA", "");
 			System.out.println("!!!!!!!!!! ---------------- connection successed ---------------- !!!!!!!!!!!!!!!!!!");
-			c.setAutoCommit(true);
-			
-			test();
-			
+			connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	public void development_init_db() throws SQLException {
+		int result;
+		Statement stmt = connection.createStatement();
+		
+		result = stmt.executeUpdate("DROP TABLE IF EXISTS resource;");
+		System.out.println("!!!!!!!!!! ---------------- drop resource table: " + result);
+		result = stmt.executeUpdate("DROP TABLE IF EXISTS security;");
+		System.out.println("!!!!!!!!!! ---------------- drop security table: " + result);
+
+		result = stmt.executeUpdate(createSecurityTable);
+		System.out.println("!!!!!!!!!! ---------------- create security table: " + result);
+		result = stmt.executeUpdate(createResourceTable);
+		System.out.println("!!!!!!!!!! ---------------- create resource table: " + result);
+
+		stmt.close();
+		
+		test();
+	}
+	
 	public void init_db() throws SQLException {
-		Statement stmt = c.createStatement();
-		int result = stmt.executeUpdate(createTable);
+		Statement stmt = connection.createStatement();
+		int result = stmt.executeUpdate(createSecurityTable);
 		System.out.println("!!!!!!!!!! ---------------- create table: " + result);
 		stmt.close();
 	}
 
 	public List<UserSecurityEntity> getAllUserSecurity(int offset, int limit) throws SQLException {
 		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
-		String sql = "SELECT id, name, passwd, notes FROM security" + " OFFSET " + offset + " LIMIT " + limit + ";";
+		String sql = "SELECT id, name, passwd, email, notes FROM security" + " OFFSET " + offset + " LIMIT " + limit + ";";
 		//System.out.println("DEBUG:" + sql);
-		Statement stmt = c.createStatement();
+		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			UserSecurityEntity security = new UserSecurityEntity();
 			security.setId(rs.getInt("id"));
 			security.setUsername(rs.getString("name"));
 			security.setPasswd(rs.getString("passwd"));
+			security.setEmail(rs.getString("email"));
 			security.setNotes(rs.getString("notes"));
 			securitys.add(security);
 		}
@@ -67,37 +92,48 @@ public class DbManagement {
 		return securitys;
 	}
 	public void addUserSecurity(UserSecurityEntity security) throws SQLException {
-		String sql = "INSERT INTO security (name,passwd,notes) VALUES(?,?,?);";
+		String sql = "INSERT INTO security (name, passwd, email, notes) VALUES(?,?,?,?);";
 		// create the java mysql update preparedstatement
-		PreparedStatement preparedStmt = c.prepareStatement(sql);
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
 		preparedStmt.setString(1, security.getUsername());
 		preparedStmt.setString(2, security.getPasswd());
-		preparedStmt.setString(3, security.getNotes());
+		preparedStmt.setString(3, security.getEmail());
+		preparedStmt.setString(4, security.getNotes());
 		// execute the java preparedstatement
 		preparedStmt.executeUpdate();
 		preparedStmt.close();
 	}
 	
+	public void addUserResource(UserResourceEntity resource) throws SQLException {
+		String sql = "INSERT INTO resource (securityId, appId, json) VALUES(?,?,?);";
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setInt(1, resource.getSecurityId());
+		preparedStmt.setInt(2, resource.getAppId());
+		preparedStmt.setString(3, resource.getJson());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
 	
-	private void test() {
-		try {
-			init_db();
-			
-			UserSecurityEntity user = new UserSecurityEntity();
-			user.setUsername("wangyc2@risetek.com");
-			user.setPasswd("risetek");
-			user.setNotes("wangyuchun1969");
-			
-			// addUserSecurity(user);
-			
-			List<UserSecurityEntity> securitys = getAllUserSecurity(0, 100);
-			for(UserSecurityEntity u:securitys)
-				System.out.println("[" + u.getId() + "]-->> user:" + u.getUsername() + "  passwd:" + u.getPasswd() + " notes:" + u.getNotes());
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private void test() throws SQLException {
+		UserSecurityEntity user = new UserSecurityEntity();
+		user.setUsername("wangyc2@risetek.com");
+		user.setPasswd("risetek");
+		user.setEmail("wangyc@risetek.com");
+		user.setNotes("wangyuchun1969");
 		
+		addUserSecurity(user);
+		
+		List<UserSecurityEntity> securitys = getAllUserSecurity(0, 100);
+		for(UserSecurityEntity u:securitys)
+			System.out.println("[" + u.getId() + "]-->> user:" + u.getUsername() + "  passwd:" + u.getPasswd() + " notes:" + u.getNotes());
+		
+		
+		UserResourceEntity resource = new UserResourceEntity();
+		resource.setSecurityId(0);
+		resource.setAppId(0);
+		resource.setJson("<json>id</json>");
+		addUserResource(resource);
 	}
 }

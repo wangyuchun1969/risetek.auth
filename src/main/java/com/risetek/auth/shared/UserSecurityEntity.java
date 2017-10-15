@@ -21,6 +21,12 @@ public class UserSecurityEntity implements IsSerializable {
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getNotes() {
 		return notes;
 	}
@@ -30,5 +36,6 @@ public class UserSecurityEntity implements IsSerializable {
 	private int id;
 	private String username;
 	private String passwd;
+	private String email;
 	private String notes;
 }

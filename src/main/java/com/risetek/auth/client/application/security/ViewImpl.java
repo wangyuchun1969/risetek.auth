@@ -56,6 +56,15 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		dataprovider.addDataDisplay(celltable);
 		celltable.setSize("100%", "100%");
 
+		NullFilledTextColumn id_Column = new NullFilledTextColumn() {
+			@Override
+			public String getValue(UserSecurityEntity object) {
+				return Integer.toString(object.getId());
+			}
+		};
+		celltable.addColumn(id_Column, "ID");
+		celltable.setColumnWidth(id_Column, 60, Unit.PX);
+		
 		NullFilledTextColumn ident_Column = new NullFilledTextColumn() {
 			@Override
 			public String getValue(UserSecurityEntity object) {
@@ -65,6 +74,15 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		celltable.addColumn(ident_Column, "用户名");
 		celltable.setColumnWidth(ident_Column, 160, Unit.PX);
 	
+		NullFilledTextColumn email_Column = new NullFilledTextColumn() {
+			@Override
+			public String getValue(UserSecurityEntity object) {
+				return object.getEmail();
+			}
+		};
+		celltable.addColumn(email_Column, "eMail");
+		celltable.setColumnWidth(email_Column, 160, Unit.PX);
+
 		NullFilledTextColumn notes_Column = new NullFilledTextColumn() {
 			@Override
 			public String getValue(UserSecurityEntity object) {
@@ -72,7 +90,6 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 			}
 		};
 		celltable.addColumn(notes_Column, "备注");
-		// celltable.setColumnWidth(ident_Column, 160, Unit.PX);
 
 		// ------------------------------------------------------------------
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
