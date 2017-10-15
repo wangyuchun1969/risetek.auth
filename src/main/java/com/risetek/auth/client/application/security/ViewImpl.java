@@ -4,15 +4,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -35,7 +43,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		protected void onBrowserEvent2(Event event) {
 			super.onBrowserEvent2(event);
 			
-			if(event.getTypeInt() == Event.ONMOUSEWHEEL) {
+			if(Event.ONMOUSEWHEEL == event.getTypeInt()) {
 				if(event.getMouseWheelVelocityY() > 0) {
 					getUiHandlers().onPager(1);
 				} else {
@@ -73,11 +81,46 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		};
 		celltable.addColumn(ident_Column, "用户名");
 		celltable.setColumnWidth(ident_Column, 160, Unit.PX);
-	
-		NullFilledTextColumn email_Column = new NullFilledTextColumn() {
+
+		CustomColumn<UserSecurityEntity> passwd_Column = new CustomColumn<UserSecurityEntity>("tips") {
+			@Override
+			public String getValue(UserSecurityEntity object) {
+				return "********";
+			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserSecurityEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					Window.alert("yes!");
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
+			}
+		};
+		celltable.addColumn(passwd_Column, "密码");
+		celltable.setColumnWidth(passwd_Column, 80, Unit.PX);
+
+		CustomColumn<UserSecurityEntity> email_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
 				return object.getEmail();
+			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserSecurityEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					Window.alert("yes!");
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
 			}
 		};
 		celltable.addColumn(email_Column, "eMail");
@@ -147,6 +190,54 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 				sb.appendHtmlConstant("&nbsp;");
 			else
 				super.render(context, object, sb);
+		}
+	}
+
+	//------------------------------------------------------------------------------------
+
+	abstract class CustomColumn<T> extends Column<T, String> {
+		public String tips;
+		public CustomColumn(String tips) {
+			super(new CustomCell());
+			this.tips = tips;
+		}
+
+		@Override
+		public void render(Context context, T object, SafeHtmlBuilder sb) {
+			if(object == null)
+				sb.appendHtmlConstant("&nbsp;");
+			else
+				super.render(context, object, sb);
+		}
+		
+		@Override
+		public void onBrowserEvent(Context context, Element elem, final T object, NativeEvent event) {
+			super.onBrowserEvent(context, elem, object, event);
+			String type = event.getType();
+			Style style = elem.getParentElement().getStyle();
+			if ("mouseover".equals(type)) {
+				style.setCursor(Cursor.POINTER);
+				style.setColor("red");
+			} else if ("mouseout".equals(type)) {
+				style.setCursor(Cursor.DEFAULT);
+				style.clearColor();
+			}
+		}
+	}
+		
+	class CustomCell extends AbstractSafeHtmlCell<String> {
+
+		public CustomCell() {
+			super(SimpleSafeHtmlRenderer.getInstance(), "mouseover",
+					"mouseout", "click");
+		}
+
+		@Override
+		public void render(Context context, SafeHtml value, SafeHtmlBuilder sb) {
+			if (value != null && value.asString().length() > 0)
+				sb.append(value);
+			else
+				sb.appendHtmlConstant("&nbsp;");
 		}
 	}
 
