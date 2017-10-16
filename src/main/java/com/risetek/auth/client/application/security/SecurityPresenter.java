@@ -19,6 +19,7 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.risetek.auth.client.application.ApplicationPresenter;
+import com.risetek.auth.client.application.security.editor.EditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
 import com.risetek.auth.shared.DatabaseSecurityQueryAction;
@@ -40,14 +41,17 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
     }
 
     private final DispatchAsync dispatcher;
+    private final EditorPresenter editor;
     @Inject
     SecurityPresenter(
             EventBus eventBus,
-            MyView view, 
+            MyView view,
+            EditorPresenter editor,
             MyProxy proxy, DispatchAsync dispatcher) {
         super(eventBus, view, proxy, ApplicationPresenter.SLOT_SetMainContent);
         getView().setUiHandlers(this);
         this.dispatcher = dispatcher;
+        this.editor = editor;
     }
 
 	@Override
@@ -101,5 +105,10 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 	@Override
 	public void refreshPages(boolean isResized, boolean forceLoad) {
 		ListUsers();
+	}
+
+	@Override
+	public void editPassword(UserSecurityEntity entity) {
+		editor.editor(entity, EditorPresenter.Field.PASSWD);
 	}
 }

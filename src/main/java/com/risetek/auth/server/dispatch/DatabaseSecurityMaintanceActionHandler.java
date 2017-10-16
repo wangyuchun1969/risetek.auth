@@ -21,12 +21,25 @@ public class DatabaseSecurityMaintanceActionHandler implements ActionHandler<Dat
 			throws ActionException {
 
 		if(Operator.DELETE == action.operator) {
-			
+			try {
+				dbManagement.deleteUserSecurity(action.security);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new ActionException(e.toString());
+			}
 		} else if(Operator.INSERT == action.operator) {
 			try {
 				dbManagement.addUserSecurity(action.security);
 			} catch (SQLException e) {
 				e.printStackTrace();
+				throw new ActionException(e.toString());
+			}
+		} else if(Operator.UPDATE == action.operator) {
+			try {
+				dbManagement.updateUserSecurity(action.security);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new ActionException(e.toString());
 			}
 		}
 		return null;

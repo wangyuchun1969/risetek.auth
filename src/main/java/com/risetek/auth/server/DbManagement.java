@@ -91,6 +91,21 @@ public class DbManagement {
 		stmt.close();
 		return securitys;
 	}
+
+	public void updateUserSecurity(UserSecurityEntity security) throws SQLException {
+		String sql = "UPDATE security SET name = ?, passwd = ?, email = ?, notes = ? WHERE id=?;";
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setString(1, security.getUsername());
+		preparedStmt.setString(2, security.getPasswd());
+		preparedStmt.setString(3, security.getEmail());
+		preparedStmt.setString(4, security.getNotes());
+		preparedStmt.setInt(4, security.getId());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
+	
 	public void addUserSecurity(UserSecurityEntity security) throws SQLException {
 		String sql = "INSERT INTO security (name, passwd, email, notes) VALUES(?,?,?,?);";
 		// create the java mysql update preparedstatement
@@ -103,6 +118,14 @@ public class DbManagement {
 		preparedStmt.executeUpdate();
 		preparedStmt.close();
 	}
+
+	public void deleteUserSecurity(UserSecurityEntity security) throws SQLException {
+		String sql = "DELETE FROM security WHERE id=" + security.getId() + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		stmt.execute(sql);
+		stmt.close();
+	}	
 	
 	public void addUserResource(UserResourceEntity resource) throws SQLException {
 		String sql = "INSERT INTO resource (securityId, appId, json) VALUES(?,?,?);";

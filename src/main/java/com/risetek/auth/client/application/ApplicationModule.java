@@ -5,6 +5,7 @@ import com.risetek.auth.client.application.auth.AuthModule;
 import com.risetek.auth.client.application.home.HomeModule;
 import com.risetek.auth.client.application.login.LoginModule;
 import com.risetek.auth.client.application.security.SecurityModule;
+import com.risetek.auth.client.application.security.editor.SecurityEditorModule;
 
 public class ApplicationModule extends AbstractPresenterModule {
     @Override
@@ -13,6 +14,7 @@ public class ApplicationModule extends AbstractPresenterModule {
         install(new LoginModule());
         install(new AuthModule());
         install(new SecurityModule());
+        install(new SecurityEditorModule());
 
         bindPresenter(ApplicationPresenter.class,
         		ApplicationPresenter.MyView.class,

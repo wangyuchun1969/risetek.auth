@@ -95,7 +95,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					Window.alert("yes!");
+					getUiHandlers().editPassword(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
