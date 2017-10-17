@@ -31,7 +31,8 @@ public class DbManagement {
 			" id IDENTITY," + 
 			" securityId INT NOT NULL FOREIGN KEY REFERENCES security(id)," + 
 			" appId INT NOT NULL," + 
-			" json VARCHAR(60) NOT NULL," + 
+			" key VARCHAR(30) NOT NULL," + 
+			" value VARCHAR(600) NOT NULL," + 
 			" UNIQUE(securityId, appId)," +
 			");";
 
@@ -128,15 +129,36 @@ public class DbManagement {
 	}	
 	
 	public void addUserResource(UserResourceEntity resource) throws SQLException {
-		String sql = "INSERT INTO resource (securityId, appId, json) VALUES(?,?,?);";
+		String sql = "INSERT INTO resource (securityId, appId, key, value) VALUES(?,?,?,?);";
 		// create the java mysql update preparedstatement
 		PreparedStatement preparedStmt = connection.prepareStatement(sql);
 		preparedStmt.setInt(1, resource.getSecurityId());
 		preparedStmt.setInt(2, resource.getAppId());
-		preparedStmt.setString(3, resource.getJson());
+		preparedStmt.setString(3, resource.getKey());
+		preparedStmt.setString(4, resource.getValue());
 		// execute the java preparedstatement
 		preparedStmt.executeUpdate();
 		preparedStmt.close();
+	}
+	
+	public List<UserResourceEntity> getUserResouce(UserSecurityEntity entity) throws SQLException {
+		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
+		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId=" + entity.getId() + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			UserResourceEntity resource = new UserResourceEntity();
+			resource.setId(rs.getInt("id"));
+			resource.setSecurityId(rs.getInt("securityId"));
+			resource.setAppId(rs.getInt("appId"));
+			resource.setKey(rs.getString("key"));
+			resource.setValue(rs.getString("value"));
+			resources.add(resource);
+		}
+
+		stmt.close();
+		return resources;
 	}
 	
 	private void test() throws SQLException {
@@ -156,7 +178,15 @@ public class DbManagement {
 		UserResourceEntity resource = new UserResourceEntity();
 		resource.setSecurityId(0);
 		resource.setAppId(0);
-		resource.setJson("<json>id</json>");
+		resource.setKey("roles");
+		resource.setValue("admin:visitor");
+		addUserResource(resource);
+		
+		resource = new UserResourceEntity();
+		resource.setSecurityId(0);
+		resource.setAppId(0);
+		resource.setKey("teams");
+		resource.setValue("17:22");
 		addUserResource(resource);
 	}
 }

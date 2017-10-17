@@ -21,14 +21,21 @@ public class UserResourceEntity implements IsSerializable {
 	public void setAppId(int appId) {
 		this.appId = appId;
 	}
-	public String getJson() {
-		return json;
+	public String getKey() {
+		return key;
 	}
-	public void setJson(String json) {
-		this.json = json;
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
 	}
 	private int id;
 	private int securityId;
 	private int appId;
-	private String json;
+	private String key;
+	private String value;
 }
