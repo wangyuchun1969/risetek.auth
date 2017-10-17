@@ -27,7 +27,7 @@ import com.risetek.auth.shared.GetResults;
 import com.risetek.auth.shared.UserSecurityEntity;
 
 public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, SecurityPresenter.MyProxy>
-	implements MyUiHandlers {
+	implements MyUiHandlers, DataChangedEvent.DataChangedHandler {
 	
     public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
     	void showUsers(List<UserSecurityEntity> users);
@@ -52,6 +52,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
         getView().setUiHandlers(this);
         this.dispatcher = dispatcher;
         this.editor = editor;
+        eventBus.addHandler(DataChangedEvent.getType(), this);
     }
 
 	@Override
@@ -110,5 +111,32 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 	@Override
 	public void editPassword(UserSecurityEntity entity) {
 		editor.editor(entity, EditorPresenter.Field.PASSWD);
+	}
+
+	@Override
+	public void onDataChanged() {
+		ListUsers();
+	}
+
+	@Override
+	public void editMail(UserSecurityEntity entity) {
+		editor.editor(entity, EditorPresenter.Field.EMAIL);
+	}
+
+	@Override
+	public void editNotes(UserSecurityEntity entity) {
+		editor.editor(entity, EditorPresenter.Field.NOTES);
+	}
+
+	@Override
+	public void addUser() {
+		UserSecurityEntity entity = new UserSecurityEntity();
+		entity.setId(-1);
+		editor.editor(entity, EditorPresenter.Field.ALL);
+	}
+
+	@Override
+	public void deleteUser(UserSecurityEntity entity) {
+		// TODO: confirm!!!
 	}
 }

@@ -100,7 +100,7 @@ public class DbManagement {
 		preparedStmt.setString(2, security.getPasswd());
 		preparedStmt.setString(3, security.getEmail());
 		preparedStmt.setString(4, security.getNotes());
-		preparedStmt.setInt(4, security.getId());
+		preparedStmt.setInt(5, security.getId());
 		// execute the java preparedstatement
 		preparedStmt.executeUpdate();
 		preparedStmt.close();

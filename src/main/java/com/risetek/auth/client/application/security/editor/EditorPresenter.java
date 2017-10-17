@@ -15,7 +15,6 @@ import com.gwtplatform.mvp.client.proxy.RevealRootPopupContentEvent;
 import com.risetek.auth.client.AuthorityChangedEvent;
 import com.risetek.auth.client.application.security.DataChangedEvent;
 import com.risetek.auth.shared.DatabaseSecurityMaintanceAction;
-import com.risetek.auth.shared.DatabaseSecurityMaintanceAction.Operator;
 import com.risetek.auth.shared.GetNoResult;
 import com.risetek.auth.shared.UserSecurityEntity;
 
@@ -23,6 +22,9 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 		implements PageUiHandlers {
 	public interface MyView extends PopupView, HasUiHandlers<PageUiHandlers> {
 		void showPassword(UserSecurityEntity entity);
+		void showMail(UserSecurityEntity entity);
+		void showNote(UserSecurityEntity entity);
+		void showNew(UserSecurityEntity entity);
 	}
 
 	private final DispatchAsync dispatcher;
@@ -39,6 +41,13 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 	public void editor(UserSecurityEntity entity, Field field) {
 		switch(field) {
 		case ALL:
+			getView().showNew(entity);
+			break;
+		case EMAIL:
+			getView().showMail(entity);
+			break;
+		case NOTES:
+			getView().showNote(entity);
 			break;
 		case PASSWD:
 			getView().showPassword(entity);
@@ -49,9 +58,9 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 		RevealRootPopupContentEvent.fire(this, this);
 	}
 	
-	public void update(UserSecurityEntity entity) {
-
-		DatabaseSecurityMaintanceAction action = new DatabaseSecurityMaintanceAction(entity, Operator.UPDATE);
+	@Override
+	public void onSave(UserSecurityEntity entity) {
+		DatabaseSecurityMaintanceAction action = new DatabaseSecurityMaintanceAction(entity, (entity.getId() < 0) ? "insert":"update");
 		
 		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
 			@Override
@@ -94,12 +103,6 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 	}
 
 	@Override
-	public void onSave(UserSecurityEntity entity) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void onDelete(UserSecurityEntity entity) {
 		// TODO Auto-generated method stub
 		
@@ -107,7 +110,6 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 
 	@Override
 	public void onCancle() {
-		// TODO Auto-generated method stub
-		
+		getView().hide();
 	}
 }

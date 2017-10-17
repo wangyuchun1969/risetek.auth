@@ -7,5 +7,9 @@ interface MyUiHandlers extends UiHandlers {
 	public void ListUsers();
 	public void onPager(int pages);
 	public void refreshPages(boolean isResized, boolean forceLoad);
-	public void editPassword(UserSecurityEntity eneity);
+	public void editPassword(UserSecurityEntity entity);
+	public void editMail(UserSecurityEntity entity);
+	public void editNotes(UserSecurityEntity entity);
+	public void addUser();
+	public void deleteUser(UserSecurityEntity entity);
 }

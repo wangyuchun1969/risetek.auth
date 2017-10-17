@@ -20,7 +20,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -37,6 +37,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 	private final SimplePanel pagerSlotPanel = new SimplePanel();
 	private final ListDataProvider<UserSecurityEntity> dataprovider;
 	private final NoSelectionModel<UserSecurityEntity> selectionModel = new NoSelectionModel<UserSecurityEntity>();
+	private final Button addUserButton = new Button("添加用户");
 
 	private final CellTable<UserSecurityEntity> celltable = new CellTable<UserSecurityEntity>(10, TableResources.resources) {
 		@Override
@@ -64,10 +65,23 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		dataprovider.addDataDisplay(celltable);
 		celltable.setSize("100%", "100%");
 
-		NullFilledTextColumn id_Column = new NullFilledTextColumn() {
+		CustomColumn<UserSecurityEntity> id_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
 				return Integer.toString(object.getId());
+			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserSecurityEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					getUiHandlers().deleteUser(object);
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
 			}
 		};
 		celltable.addColumn(id_Column, "ID");
@@ -117,21 +131,36 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					Window.alert("yes!");
+					getUiHandlers().editMail(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
 			}
 		};
-		celltable.addColumn(email_Column, "eMail");
+		celltable.addColumn(email_Column, "电邮");
 		celltable.setColumnWidth(email_Column, 160, Unit.PX);
 
-		NullFilledTextColumn notes_Column = new NullFilledTextColumn() {
+
+		CustomColumn<UserSecurityEntity> notes_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
 				return object.getNotes();
 			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserSecurityEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					getUiHandlers().editNotes(object);
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
+			}
 		};
+		
 		celltable.addColumn(notes_Column, "备注");
 
 		// ------------------------------------------------------------------
@@ -154,12 +183,15 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		frameDocker.setSize("100%", "100%");
 		initWidget(frameDocker);
 		pagerSlotPanel.setSize("100%", "100%");
+		pagerSlotPanel.add(addUserButton);
 		frameDocker.addSouth(pagerSlotPanel, 30);
 		resizePanel.setSize("100%", "100%");
 		resizePanel.addResizeHandler(this);
 		initTable();
 		resizePanel.add(celltable);
 		frameDocker.add(resizePanel);
+		
+		addUserButton.addClickHandler(event->getUiHandlers().addUser());
     }
 
 	@Override

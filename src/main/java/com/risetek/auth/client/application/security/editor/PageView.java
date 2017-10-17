@@ -1,19 +1,13 @@
 package com.risetek.auth.client.application.security.editor;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
@@ -29,12 +23,13 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	private final PopupPanel pop = new PopupPanel();
 	
 	private final FlowPanel buttonPanel = new FlowPanel();
-	private final Button delete_button = new Button("删除");
 	private final Button close_button = new Button("放弃");
 	private final Button update_button = new Button("确认");
 	
 	
-	private final Label username = new Label();
+	private final TextBox username = new TextBox();
+	private final TextBox eMailBox = new TextBox();
+	private final TextBox notesBox = new TextBox();
 	private final PasswordTextBox passedBox = new PasswordTextBox();
 
 	@Inject
@@ -48,12 +43,11 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 
 		docker.setWidth("400px");
 		
-		backgroundPanel.add(addItem(new Label("名称"), passedBox));
+		backgroundPanel.add(addItem(new Label("用户"), username));
+		backgroundPanel.add(addItem(new Label("密码"), passedBox));
+		backgroundPanel.add(addItem(new Label("电邮"), eMailBox));
+		backgroundPanel.add(addItem(new Label("备注"), notesBox));
 		docker.add(backgroundPanel);
-
-		delete_button.addClickHandler(event->getUiHandlers().onDelete(localEntity));
-		delete_button.setStyleName(style.editorButton());
-		buttonPanel.add(delete_button);
 
 		close_button.addClickHandler(event->getUiHandlers().onCancle());
 		close_button.setStyleName(style.editorButton());
@@ -65,6 +59,9 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		
 		update_button.addClickHandler(event->{
 			localEntity.setPasswd(passedBox.getValue());
+			localEntity.setUsername(username.getValue());
+			localEntity.setEmail(eMailBox.getValue());
+			localEntity.setNotes(notesBox.getValue());
 			getUiHandlers().onSave(localEntity);
 		});
 		update_button.setStyleName(style.editorButton());
@@ -84,11 +81,49 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	}
 	
 	private UserSecurityEntity localEntity;
+	private void showItems(UserSecurityEntity entity) {
+		localEntity = entity;
+		username.setText(entity.getUsername());
+		eMailBox.setText(entity.getEmail());
+		notesBox.setText(entity.getNotes());
+		passedBox.setValue(null);
+	}
 	@Override
 	public void showPassword(UserSecurityEntity entity) {
-		localEntity = entity;
+		showItems(entity);
+		username.setEnabled(false);
+		eMailBox.setEnabled(false);
+		notesBox.setEnabled(false);
+		passedBox.setEnabled(true);
 	}
 	
+	@Override
+	public void showMail(UserSecurityEntity entity) {
+		showItems(entity);
+		username.setEnabled(false);
+		eMailBox.setEnabled(true);
+		notesBox.setEnabled(false);
+		passedBox.setEnabled(false);
+	}
+
+	@Override
+	public void showNote(UserSecurityEntity entity) {
+		showItems(entity);
+		username.setEnabled(false);
+		eMailBox.setEnabled(false);
+		notesBox.setEnabled(true);
+		passedBox.setEnabled(false);
+	}
+
+	@Override
+	public void showNew(UserSecurityEntity entity) {
+		showItems(entity);
+		username.setEnabled(true);
+		eMailBox.setEnabled(true);
+		notesBox.setEnabled(true);
+		passedBox.setEnabled(true);
+	}
+
 	private Widget addItem(Widget label, Widget box) {
 		FlowPanel fPanel = new FlowPanel();
 		SimplePanel sp = new SimplePanel();

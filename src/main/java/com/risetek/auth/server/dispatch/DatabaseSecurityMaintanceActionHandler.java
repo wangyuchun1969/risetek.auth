@@ -8,7 +8,6 @@ import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 import com.risetek.auth.server.DbManagement;
 import com.risetek.auth.shared.DatabaseSecurityMaintanceAction;
-import com.risetek.auth.shared.DatabaseSecurityMaintanceAction.Operator;
 import com.risetek.auth.shared.GetNoResult;
 
 public class DatabaseSecurityMaintanceActionHandler implements ActionHandler<DatabaseSecurityMaintanceAction, GetNoResult> {
@@ -20,21 +19,21 @@ public class DatabaseSecurityMaintanceActionHandler implements ActionHandler<Dat
 	public GetNoResult execute(DatabaseSecurityMaintanceAction action, ExecutionContext context)
 			throws ActionException {
 
-		if(Operator.DELETE == action.operator) {
+		if("delete".equals(action.operator)) {
 			try {
 				dbManagement.deleteUserSecurity(action.security);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new ActionException(e.toString());
 			}
-		} else if(Operator.INSERT == action.operator) {
+		} else if("insert".equals(action.operator)) {
 			try {
 				dbManagement.addUserSecurity(action.security);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new ActionException(e.toString());
 			}
-		} else if(Operator.UPDATE == action.operator) {
+		} else if("update".equals(action.operator)) {
 			try {
 				dbManagement.updateUserSecurity(action.security);
 			} catch (SQLException e) {
