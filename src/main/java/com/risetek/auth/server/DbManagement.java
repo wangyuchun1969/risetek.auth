@@ -33,13 +33,13 @@ public class DbManagement {
 			" appId INT NOT NULL," + 
 			" key VARCHAR(30) NOT NULL," + 
 			" value VARCHAR(600) NOT NULL," + 
-			" UNIQUE(securityId, appId)," +
+			" UNIQUE(securityId, appId, key)," +
 			");";
 
 	private Connection connection;
 	public DbManagement() {
 		try {
-			connection = DriverManager.getConnection("jdbc:hsqldb:file:/risetek/userdb", "SA", "");
+			connection = DriverManager.getConnection("jdbc:hsqldb:file:/risetekauth/db", "SA", "");
 			System.out.println("!!!!!!!!!! ---------------- connection successed ---------------- !!!!!!!!!!!!!!!!!!");
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {

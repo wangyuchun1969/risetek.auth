@@ -6,5 +6,6 @@
 * `mvn jetty:run` 启动本地服务
  
 ### DOCKER
-* docker run --name jetty -v /home/developer/webapps:/var/lib/jetty/webapps -p 10082:8080 jetty
-* docker run -d --name jetty -v /home/developer/webapps:/var/lib/jetty/webapps -p 10082:8080 jetty
+* docker run --name openauth -v /home/developer/webapps:/var/lib/jetty/webapps -p 10082:8080 jetty
+* docker run -d --name openauth -v /home/developer/webapps:/var/lib/jetty/webapps -p 10082:8080 jetty
+* docker run -d --name openauth -v /home/developer/webapps:/var/lib/jetty/webapps -v /home/developer/risetekauth:/risetekauth -p 10082:8080 jetty

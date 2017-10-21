@@ -38,6 +38,9 @@ public class MyShiroWebModule extends ShiroWebModule {
         addFilterChain("/dispatch/DeviceOnlineEntityAction", ANON);
         addFilterChain("/dispatch/DropEntityAction", ANON);
 
+        // 授权登录Action
+        addFilterChain("/dispatch/OpenAuthAction", ANON);
+        
         // TODO: 暂时性取消安全审核?
 //      addFilterChain("/dispatch/*", ANON);
 //        addFilterChain("/dispatch/*", ROLES, config(PERMS, "no"));
