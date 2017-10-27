@@ -1,4 +1,4 @@
-package com.risetek.auth.client.application.security;
+package com.risetek.auth.client.application.resources;
 
 import java.util.List;
 
@@ -19,62 +19,56 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
-import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.application.ApplicationPresenter;
-import com.risetek.auth.client.application.security.editor.EditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
-import com.risetek.auth.shared.DatabaseSecurityQueryAction;
+import com.risetek.auth.shared.DatabaseResourcesQueryAction;
 import com.risetek.auth.shared.GetResults;
+import com.risetek.auth.shared.UserResourceEntity;
 import com.risetek.auth.shared.UserSecurityEntity;
 
-public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, SecurityPresenter.MyProxy>
+public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl.MyProxy>
 	implements MyUiHandlers, DataChangedEvent.DataChangedHandler {
 	
     public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
-    	void showUsers(List<UserSecurityEntity> users);
+    	void showResults(List<UserResourceEntity> lists);
 		public int getPageSize();
     }
 
     @ProxyStandard
 	@UseGatekeeper(LoggedInGatekeeper.class)
-    @NameToken(NameTokens.security)
-    interface MyProxy extends ProxyPlace<SecurityPresenter> {
+    @NameToken(NameTokens.resource)
+    interface MyProxy extends ProxyPlace<PresenterImpl> {
     }
 
     private final DispatchAsync dispatcher;
-    private final EditorPresenter editor;
     private final PlaceManager placeManager;
-    
     @Inject
-    SecurityPresenter(
+    PresenterImpl(
             EventBus eventBus,
             MyView view,
-            EditorPresenter editor,
             PlaceManager placeManager,
             MyProxy proxy, DispatchAsync dispatcher) {
         super(eventBus, view, proxy, ApplicationPresenter.SLOT_SetMainContent);
         getView().setUiHandlers(this);
         this.dispatcher = dispatcher;
-        this.editor = editor;
         this.placeManager = placeManager;
         eventBus.addHandler(DataChangedEvent.getType(), this);
     }
 
 	@Override
     protected void onReset() {
-		GWT.log("onReset");
     	super.onReset();
     }
 
 	@Override
-	public void ListUsers() {
-		DatabaseSecurityQueryAction action = new DatabaseSecurityQueryAction(currentPage * getView().getPageSize(), getView().getPageSize()+1);
+	public void ListUsers(int keyid, int appid) {
+		DatabaseResourcesQueryAction action = new DatabaseResourcesQueryAction(keyid, appid);
 		
-		dispatcher.execute(action, new AsyncCallback<GetResults<UserSecurityEntity>>() {
+		dispatcher.execute(action, new AsyncCallback<GetResults<UserResourceEntity>>() {
 			@Override
-			public void onSuccess(GetResults<UserSecurityEntity> result) {
-				getView().showUsers(result.getResults());
+			public void onSuccess(GetResults<UserResourceEntity> result) {
+				getView().showResults(result.getResults());
 			}
 
 			@Override
@@ -111,43 +105,34 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 
 	@Override
 	public void refreshPages(boolean isResized, boolean forceLoad) {
-		ListUsers();
-	}
-
-	@Override
-	public void editPassword(UserSecurityEntity entity) {
-		editor.editor(entity, EditorPresenter.Field.PASSWD);
+		int appid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("app", "-1"));
+		int keyid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("key", "-1"));
+		ListUsers(keyid, appid);
 	}
 
 	@Override
 	public void onDataChanged() {
-		ListUsers();
+		int appid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("app", "-1"));
+		int keyid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("key", "-1"));
+		
+		ListUsers(keyid, appid);
 	}
 
 	@Override
-	public void editMail(UserSecurityEntity entity) {
-		editor.editor(entity, EditorPresenter.Field.EMAIL);
-	}
-
-	@Override
-	public void editNotes(UserSecurityEntity entity) {
-		editor.editor(entity, EditorPresenter.Field.NOTES);
-	}
-
-	@Override
-	public void addUser() {
-		UserSecurityEntity entity = new UserSecurityEntity();
+	public void addResource() {
+		UserResourceEntity entity = new UserResourceEntity();
 		entity.setId(-1);
-		editor.editor(entity, EditorPresenter.Field.ALL);
+		//editor.editor(entity, EditorPresenter.Field.ALL);
 	}
 
 	@Override
-	public void deleteUser(UserSecurityEntity entity) {
+	public void deleteResource(UserResourceEntity entity) {
 		// TODO: confirm!!!
 	}
 
 	@Override
-	public void editResources(UserSecurityEntity entity) {
-		placeManager.revealPlace(new PlaceRequest.Builder().with("key", Integer.toString(entity.getId())).with("app", Integer.toString(0)).nameToken(NameTokens.resource).build());
+	public void editResources(UserResourceEntity entity) {
+		//resourcesEditor.editor(entity);
+		
 	}
 }

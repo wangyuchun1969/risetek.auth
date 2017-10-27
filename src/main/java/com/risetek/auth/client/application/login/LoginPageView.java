@@ -22,9 +22,11 @@ class LoginPageView extends ViewWithUiHandlers<LoginUiHandlers> implements Login
     @Inject
     public LoginPageView() {
 		dockPanel.setSize("100%", "100%");
+/*		
     	dockPanel.addNorth(new Label("demo use name: test@risetek.com password: test"), 40);
     	dockPanel.addNorth(new Label("demo use name: sdy@risetek.com password: sdy"), 40);
     	dockPanel.addNorth(new Label("demo use name: szw@risetek.com password: szw"), 40);
+*/
     	dockPanel.add(loginWidget);
         initWidget(dockPanel);
     }

@@ -1,4 +1,4 @@
-package com.risetek.auth.client.application.security;
+package com.risetek.auth.client.application.resources;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -28,17 +29,17 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.risetek.auth.shared.UserSecurityEntity;
+import com.risetek.auth.shared.UserResourceEntity;
 
-public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements SecurityPresenter.MyView, ResizeHandler {
+public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements PresenterImpl.MyView, ResizeHandler {
 	private final DockLayoutPanel frameDocker = new DockLayoutPanel(Unit.PX);
 	private final ResizeLayoutPanel resizePanel = new ResizeLayoutPanel();
 	private final SimplePanel pagerSlotPanel = new SimplePanel();
-	private final ListDataProvider<UserSecurityEntity> dataprovider;
-	private final NoSelectionModel<UserSecurityEntity> selectionModel = new NoSelectionModel<UserSecurityEntity>();
+	private final ListDataProvider<UserResourceEntity> dataprovider;
+	private final NoSelectionModel<UserResourceEntity> selectionModel = new NoSelectionModel<UserResourceEntity>();
 	private final Button addUserButton = new Button("添加用户");
 
-	private final CellTable<UserSecurityEntity> celltable = new CellTable<UserSecurityEntity>(10, TableResources.resources) {
+	private final CellTable<UserResourceEntity> celltable = new CellTable<UserResourceEntity>(10, TableResources.resources) {
 		@Override
 		protected void onBrowserEvent2(Event event) {
 			super.onBrowserEvent2(event);
@@ -64,20 +65,20 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		dataprovider.addDataDisplay(celltable);
 		celltable.setSize("100%", "100%");
 
-		CustomColumn<UserSecurityEntity> id_Column = new CustomColumn<UserSecurityEntity>("tips") {
+		CustomColumn<UserResourceEntity> id_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
-			public String getValue(UserSecurityEntity object) {
+			public String getValue(UserResourceEntity object) {
 				return Integer.toString(object.getId());
 			}
 
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
-					final UserSecurityEntity object, NativeEvent event) {
+					final UserResourceEntity object, NativeEvent event) {
 				if (object == null)
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					getUiHandlers().deleteUser(object);
+					//getUiHandlers().deleteUser(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
@@ -86,15 +87,15 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		celltable.addColumn(id_Column, "ID");
 		celltable.setColumnWidth(id_Column, 60, Unit.PX);
 		
-		CustomColumn<UserSecurityEntity> ident_Column = new CustomColumn<UserSecurityEntity>("tips") {
+		CustomColumn<UserResourceEntity> ident_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
-			public String getValue(UserSecurityEntity object) {
-				return object.getUsername();
+			public String getValue(UserResourceEntity object) {
+				return object.getKey();
 			}
 
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
-					final UserSecurityEntity object, NativeEvent event) {
+					final UserResourceEntity object, NativeEvent event) {
 				if (object == null)
 					return;
 				String type = event.getType();
@@ -106,68 +107,23 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 			}
 		};
 
-		celltable.addColumn(ident_Column, "用户名");
+		celltable.addColumn(ident_Column, "KEY");
 		celltable.setColumnWidth(ident_Column, 160, Unit.PX);
 
-		CustomColumn<UserSecurityEntity> passwd_Column = new CustomColumn<UserSecurityEntity>("tips") {
+		CustomColumn<UserResourceEntity> notes_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
-			public String getValue(UserSecurityEntity object) {
-				return "********";
+			public String getValue(UserResourceEntity object) {
+				return object.getValue();
 			}
 
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
-					final UserSecurityEntity object, NativeEvent event) {
+					final UserResourceEntity object, NativeEvent event) {
 				if (object == null)
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					getUiHandlers().editPassword(object);
-				}
-				else
-					super.onBrowserEvent(context, elem, object, event);
-			}
-		};
-		celltable.addColumn(passwd_Column, "密码");
-		celltable.setColumnWidth(passwd_Column, 80, Unit.PX);
-
-		CustomColumn<UserSecurityEntity> email_Column = new CustomColumn<UserSecurityEntity>("tips") {
-			@Override
-			public String getValue(UserSecurityEntity object) {
-				return object.getEmail();
-			}
-
-			@Override
-			public void onBrowserEvent(Context context, Element elem,
-					final UserSecurityEntity object, NativeEvent event) {
-				if (object == null)
-					return;
-				String type = event.getType();
-				if ("click".equals(type)) {
-					getUiHandlers().editMail(object);
-				}
-				else
-					super.onBrowserEvent(context, elem, object, event);
-			}
-		};
-		celltable.addColumn(email_Column, "电邮");
-		celltable.setColumnWidth(email_Column, 160, Unit.PX);
-
-
-		CustomColumn<UserSecurityEntity> notes_Column = new CustomColumn<UserSecurityEntity>("tips") {
-			@Override
-			public String getValue(UserSecurityEntity object) {
-				return object.getNotes();
-			}
-
-			@Override
-			public void onBrowserEvent(Context context, Element elem,
-					final UserSecurityEntity object, NativeEvent event) {
-				if (object == null)
-					return;
-				String type = event.getType();
-				if ("click".equals(type)) {
-					getUiHandlers().editNotes(object);
+					//getUiHandlers().editNotes(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
@@ -191,7 +147,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 	}
 	
     @Inject
-    ViewImpl(final EventBus eventBus, ListDataProvider<UserSecurityEntity> dataProvider) {
+    ViewImpl(final EventBus eventBus, ListDataProvider<UserResourceEntity> dataProvider) {
 		dataprovider = dataProvider;
 		frameDocker.setSize("100%", "100%");
 		initWidget(frameDocker);
@@ -204,11 +160,11 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		resizePanel.add(celltable);
 		frameDocker.add(resizePanel);
 		
-		addUserButton.addClickHandler(event->getUiHandlers().addUser());
+		addUserButton.addClickHandler(event->getUiHandlers().addResource());
     }
 
 	@Override
-	public void showUsers(List<UserSecurityEntity> users) {
+	public void showResults(List<UserResourceEntity> users) {
 		int filled = users.size() % celltable.getPageSize();
 		if(filled != 0) {
 			filled = celltable.getPageSize() - filled;

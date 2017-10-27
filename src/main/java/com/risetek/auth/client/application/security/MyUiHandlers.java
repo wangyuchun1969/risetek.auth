@@ -12,4 +12,5 @@ interface MyUiHandlers extends UiHandlers {
 	public void editNotes(UserSecurityEntity entity);
 	public void addUser();
 	public void deleteUser(UserSecurityEntity entity);
+	public void editResources(UserSecurityEntity entity);
 }

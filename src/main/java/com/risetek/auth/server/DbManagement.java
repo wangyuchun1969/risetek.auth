@@ -141,9 +141,9 @@ public class DbManagement {
 		preparedStmt.close();
 	}
 	
-	public List<UserResourceEntity> getUserResouce(UserSecurityEntity entity) throws SQLException {
+	public List<UserResourceEntity> getUserResouce(int keyid, int appid) throws SQLException {
 		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
-		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId=" + entity.getId() + ";";
+		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId=" + keyid + " AND appId ="+ appid + ";";
 		//System.out.println("DEBUG:" + sql);
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
