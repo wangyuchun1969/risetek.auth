@@ -2,7 +2,6 @@ package com.risetek.auth.client.application.resources;
 
 import java.util.List;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -20,12 +19,12 @@ import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.risetek.auth.client.application.ApplicationPresenter;
+import com.risetek.auth.client.application.resources.editor.EditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
 import com.risetek.auth.shared.DatabaseResourcesQueryAction;
 import com.risetek.auth.shared.GetResults;
 import com.risetek.auth.shared.UserResourceEntity;
-import com.risetek.auth.shared.UserSecurityEntity;
 
 public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl.MyProxy>
 	implements MyUiHandlers, DataChangedEvent.DataChangedHandler {
@@ -43,16 +42,19 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 
     private final DispatchAsync dispatcher;
     private final PlaceManager placeManager;
+    private final EditorPresenter editor;
     @Inject
     PresenterImpl(
             EventBus eventBus,
             MyView view,
             PlaceManager placeManager,
+            EditorPresenter editor,
             MyProxy proxy, DispatchAsync dispatcher) {
         super(eventBus, view, proxy, ApplicationPresenter.SLOT_SetMainContent);
         getView().setUiHandlers(this);
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
+        this.editor = editor;
         eventBus.addHandler(DataChangedEvent.getType(), this);
     }
 
@@ -122,7 +124,15 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 	public void addResource() {
 		UserResourceEntity entity = new UserResourceEntity();
 		entity.setId(-1);
-		//editor.editor(entity, EditorPresenter.Field.ALL);
+		int appid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("app", "-1"));
+		int keyid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("key", "-1"));
+		if(appid == -1 || keyid == -1) {
+			Window.alert("something wrong!");
+			return;
+		}
+		entity.setAppId(appid);
+		entity.setSecurityId(keyid);
+		editor.onEdit(entity);
 	}
 
 	@Override
@@ -132,7 +142,6 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 
 	@Override
 	public void editResources(UserResourceEntity entity) {
-		//resourcesEditor.editor(entity);
-		
+		editor.onEdit(entity);
 	}
 }

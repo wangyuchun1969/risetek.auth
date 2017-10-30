@@ -18,7 +18,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -78,7 +77,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					//getUiHandlers().deleteUser(object);
+					getUiHandlers().deleteResource(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);

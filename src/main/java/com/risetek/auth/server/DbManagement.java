@@ -140,7 +140,27 @@ public class DbManagement {
 		preparedStmt.executeUpdate();
 		preparedStmt.close();
 	}
+
+	public void deleteUserResource(UserResourceEntity resource) throws SQLException {
+		String sql = "DELETE FROM resource WHERE id=" + resource.getId() + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		stmt.execute(sql);
+		stmt.close();
+	}
 	
+	public void updateUserResource(UserResourceEntity resource) throws SQLException {
+		String sql = "UPDATE resource SET key = ?, value = ? WHERE id=?;";
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setString(1, resource.getKey());
+		preparedStmt.setString(2, resource.getValue());
+		preparedStmt.setInt(3, resource.getId());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
+
 	public List<UserResourceEntity> getUserResouce(int keyid, int appid) throws SQLException {
 		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
 		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId=" + keyid + " AND appId ="+ appid + ";";
