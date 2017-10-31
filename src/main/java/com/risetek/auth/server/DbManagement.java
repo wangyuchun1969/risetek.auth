@@ -93,6 +93,26 @@ public class DbManagement {
 		return securitys;
 	}
 
+	public List<UserSecurityEntity> getUserSecurity(String name) throws SQLException {
+		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
+		String sql = "SELECT id, name, passwd, email, notes FROM security WHERE name = " + name + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			UserSecurityEntity security = new UserSecurityEntity();
+			security.setId(rs.getInt("id"));
+			security.setUsername(rs.getString("name"));
+			security.setPasswd(rs.getString("passwd"));
+			security.setEmail(rs.getString("email"));
+			security.setNotes(rs.getString("notes"));
+			securitys.add(security);
+		}
+
+		stmt.close();
+		return securitys;
+	}
+	
 	public void updateUserSecurity(UserSecurityEntity security) throws SQLException {
 		String sql = "UPDATE security SET name = ?, passwd = ?, email = ?, notes = ? WHERE id=?;";
 		// create the java mysql update preparedstatement
@@ -141,6 +161,21 @@ public class DbManagement {
 		preparedStmt.close();
 	}
 
+	public void addUserResourceIndirctor(String username, String appname, UserResourceEntity resource) throws SQLException {
+		String sql = "INSERT INTO resource (securityId, appId, key, value) VALUES((SELECT id FROM security WHERE name = ?),?,?,?);";
+		// INSERT INTO resource (securityId, appId, key, value) SELECT id, 0, ? AS key, ? AS value FROM security WHERE name = ?
+		
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setString(1, username);
+		preparedStmt.setInt(2, resource.getAppId());
+		preparedStmt.setString(3, resource.getKey());
+		preparedStmt.setString(4, resource.getValue());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
+	
 	public void deleteUserResource(UserResourceEntity resource) throws SQLException {
 		String sql = "DELETE FROM resource WHERE id=" + resource.getId() + ";";
 		//System.out.println("DEBUG:" + sql);
@@ -161,7 +196,7 @@ public class DbManagement {
 		preparedStmt.close();
 	}
 
-	public List<UserResourceEntity> getUserResouce(int keyid, int appid) throws SQLException {
+	public List<UserResourceEntity> getUserResource(int keyid, int appid) throws SQLException {
 		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
 		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId=" + keyid + " AND appId ="+ appid + ";";
 		//System.out.println("DEBUG:" + sql);
@@ -180,8 +215,31 @@ public class DbManagement {
 		stmt.close();
 		return resources;
 	}
+
+	public List<UserResourceEntity> getUserResourceByName(String username, String appname) throws SQLException {
+		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
+		String sql = "SELECT id, securityId, appId, key, value FROM resource WHERE securityId IN (SELECT id FROM security WHERE name = '"+ username + "') AND appId = 0;";
+//		System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			UserResourceEntity resource = new UserResourceEntity();
+			resource.setId(rs.getInt("id"));
+			resource.setSecurityId(rs.getInt("securityId"));
+			resource.setAppId(rs.getInt("appId"));
+			resource.setKey(rs.getString("key"));
+			resource.setValue(rs.getString("value"));
+			resources.add(resource);
+//			System.out.println("DEBUG: key:" + rs.getString("key"));
+		}
+
+		stmt.close();
+		return resources;
+	}
+	
 	
 	private void test() throws SQLException {
+		/*
 		UserSecurityEntity user = new UserSecurityEntity();
 		user.setUsername("wangyc2@risetek.com");
 		user.setPasswd("risetek");
@@ -189,12 +247,15 @@ public class DbManagement {
 		user.setNotes("wangyuchun1969");
 		
 		addUserSecurity(user);
+		*/
+		
+		users_init();
 		
 		List<UserSecurityEntity> securitys = getAllUserSecurity(0, 100);
 		for(UserSecurityEntity u:securitys)
 			System.out.println("[" + u.getId() + "]-->> user:" + u.getUsername() + "  passwd:" + u.getPasswd() + " notes:" + u.getNotes());
 		
-		
+		/*
 		UserResourceEntity resource = new UserResourceEntity();
 		resource.setSecurityId(0);
 		resource.setAppId(0);
@@ -208,5 +269,55 @@ public class DbManagement {
 		resource.setKey("teams");
 		resource.setValue("17:22");
 		addUserResource(resource);
+		*/
 	}
+
+	private void add_one_user(String name, String passwd, String email, String notes) throws SQLException {
+		UserSecurityEntity user = new UserSecurityEntity();
+		user.setUsername(name);
+		user.setPasswd(passwd);
+		user.setEmail(email);
+		user.setNotes(notes);
+		addUserSecurity(user);
+	}
+	
+	private void add_resource(String name, String key, String value) throws SQLException {
+		UserResourceEntity resource = new UserResourceEntity();
+		resource.setAppId(0);
+		resource.setKey(key);
+		resource.setValue(value);
+		addUserResourceIndirctor(name, "app", resource);
+	}
+	private void users_init() throws SQLException {
+		add_one_user("wangyc@risetek.com", "gamelan", "wangyc@risetek.com", "wangyc@risetek.com");
+		add_resource("wangyc@risetek.com", "roles", "admin:developer:maintenance:operator:visitor");
+		add_resource("wangyc@risetek.com", "teams", "-1");
+
+		add_one_user("wangyc", "gamelan", "wangyc@risetek.com", "wangyc");
+		add_resource("wangyc", "roles", "visitor");
+		add_resource("wangyc", "teams", "0");
+		
+		add_one_user("test@risetek.com", "test", "wangyc@risetek.com", "wangyc");
+		add_resource("test@risetek.com", "roles", "visitor");
+		add_resource("test@risetek.com", "teams", "0");
+
+		add_one_user("szw@risetek.com", "szw", "wangyc@risetek.com", "wangyc");
+		add_resource("szw@risetek.com", "roles", "visitor");
+		add_resource("szw@risetek.com", "teams", "17");
+		
+		add_one_user("sdy@risetek.com", "sdy", "wangyc@risetek.com", "wangyc");
+		add_resource("sdy@risetek.com", "roles", "visitor");
+		add_resource("sdy@risetek.com", "teams", "13");
+
+		add_one_user("zhangl@risetek.com", "zhangl", "zhangl@risetek.com", "zhangl@risetek.com");
+		add_resource("zhangl@risetek.com", "roles", "admin:developer:maintenance:operator:visitor");
+		add_resource("zhangl@risetek.com", "teams", "-1");
+		
+		add_one_user("wangxu@risetek.com", "wangxu", "wangxu@risetek.com", "wangxu@risetek.com");
+		add_resource("wangxu@risetek.com", "roles", "admin:developer:maintenance:operator:visitor");
+		add_resource("wangxu@risetek.com", "teams", "-1");
+		
+		getUserResourceByName("wangyc@risetek.com", "wangyc@risetek.com");
+	}
+
 }

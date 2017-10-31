@@ -22,7 +22,7 @@ public class DatabaseResourcesQueryActionHandler implements ActionHandler<Databa
 			throws ActionException {
 		List<UserResourceEntity> users = null;
 		try {
-			users = dbManagement.getUserResouce(action.userId, action.appId);
+			users = dbManagement.getUserResource(action.userId, action.appId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new ActionException(e.getMessage());

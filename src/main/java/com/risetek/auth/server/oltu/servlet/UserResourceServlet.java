@@ -2,6 +2,7 @@ package com.risetek.auth.server.oltu.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.server.DbManagement;
 import com.risetek.auth.server.UserManagement;
+import com.risetek.auth.shared.UserResourceEntity;
 
 //PATH /oauth/user
 @Singleton
@@ -32,7 +35,7 @@ public class UserResourceServlet extends HttpServlet {
 	@Inject
 	private UserManagement userManagement;
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGetV1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
 			String accessToken = oauthRequest.getAccessToken();
@@ -68,6 +71,87 @@ public class UserResourceServlet extends HttpServlet {
 					sb.append(team.toString()).append(":");
 				
 				builder.setClaimsSetCustomField("teams", sb.toString());
+			}
+			
+			builder.setSignature("risetek-yun74-id");
+			
+			JWTWriter writer = new JWTWriter();
+			String jwts = writer.write(builder.build());
+			response.setStatus(HttpServletResponse.SC_OK);
+
+			PrintWriter pw = response.getWriter();
+			pw.print(jwts);
+			pw.flush();
+			pw.close();
+		} catch (OAuthSystemException | OAuthProblemException e) {
+			e.printStackTrace();
+
+			// build error response
+			try {
+				OAuthResponse oauthResponse = OAuthRSResponse.errorResponse(HttpServletResponse.SC_UNAUTHORIZED)
+						.setRealm("account ristek").buildHeaderMessage();
+				response.addHeader(OAuth.HeaderType.WWW_AUTHENTICATE, oauthResponse.getHeader(OAuth.HeaderType.WWW_AUTHENTICATE));
+			} catch (OAuthSystemException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+
+	/*
+	 * TODO:
+	 * 需要获得用户名和应用ID!
+	 */
+	@Inject
+	private DbManagement dbManagement;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
+			String accessToken = oauthRequest.getAccessToken();
+			String username = userManagement.getUsernameByAccessToken(accessToken);
+			if(null == username)
+				throw OAuthProblemException.error("invalid client token");
+				
+			JWT.Builder builder = new JWT.Builder();
+			builder.setHeaderAlgorithm("RS256");
+			builder.setHeaderType("JWT");
+			builder.setHeaderContentType("JWT");
+			builder.setClaimsSetIssuer("accounts.risetek.com");
+			builder.setClaimsSetJwdId("UUID");
+
+			builder.setClaimsSetIssuedAt(new Date().getTime());
+			builder.setClaimsSetExpirationTime(new Date().getTime() + 1000 * 60 * 60 * 24 * 5);
+
+			builder.setClaimsSetSubject(username);
+
+/*			
+			List<String> roles = userManagement.getRoles(username);
+			if(roles != null) {
+				StringBuffer sb = new StringBuffer();
+				for(String role:roles)
+					sb.append(role).append(":");
+				
+				builder.setClaimsSetCustomField("roles", sb.toString());
+			}
+
+			List<Integer> teams = userManagement.getTeams(username);
+			if(roles != null) {
+				StringBuffer sb = new StringBuffer();
+				for(Integer team:teams)
+					sb.append(team.toString()).append(":");
+				
+				builder.setClaimsSetCustomField("teams", sb.toString());
+			}
+*/
+			try {
+				List<UserResourceEntity> list = dbManagement.getUserResourceByName(username, "risetek-yun74-id");
+				for(UserResourceEntity entity:list)
+					builder.setClaimsSetCustomField(entity.getKey(), entity.getValue());
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new IOException("database failed: " + e.getMessage());
 			}
 			
 			builder.setSignature("risetek-yun74-id");

@@ -18,11 +18,14 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
+import com.risetek.auth.client.AuthorityChangedEvent;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.application.resources.editor.EditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
+import com.risetek.auth.shared.DatabaseResourceMaintanceAction;
 import com.risetek.auth.shared.DatabaseResourcesQueryAction;
+import com.risetek.auth.shared.GetNoResult;
 import com.risetek.auth.shared.GetResults;
 import com.risetek.auth.shared.UserResourceEntity;
 
@@ -137,8 +140,40 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 
 	@Override
 	public void deleteResource(UserResourceEntity entity) {
-		// TODO: confirm!!!
-	}
+
+		DatabaseResourceMaintanceAction action = new DatabaseResourceMaintanceAction(entity, "delete");
+		
+		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
+			@Override
+			public void onSuccess(GetNoResult result) {
+				// Update parent list.
+				getEventBus().fireEvent(new DataChangedEvent());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// Convenient way to find out which exception was thrown.
+				try {
+					throw caught;
+				} catch (StatusCodeException e) {
+					// Response.SC_MOVED_TEMPORARILY
+					getEventBus().fireEvent(new AuthorityChangedEvent());
+				} catch (IncompatibleRemoteServiceException e) {
+					Window.alert("This client is not compatible with the server;\r\n Cleanup and refresh the browser.");
+				} catch (InvocationException e) {
+					// the call didn't complete cleanly
+					Window.alert("2" + e.toString());
+				} catch (RuntimeException e) {
+					Window.alert("RuntimeException:" + e);
+				} catch (Exception e) {
+					Window.alert("Exception:" + e);
+				} catch (Throwable e) {
+					// last resort -- a very unexpected exception
+					Window.alert("Throwable:" + e);
+				}
+			}
+		});
+			}
 
 	@Override
 	public void editResources(UserResourceEntity entity) {

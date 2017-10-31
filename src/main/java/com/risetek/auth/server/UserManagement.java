@@ -1,15 +1,22 @@
 package com.risetek.auth.server;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.shared.UserSecurityEntity;
 
 @Singleton
 public class UserManagement {
+	
+	@Inject
+	private DbManagement dbManagement;
+	
 	/*
 	 * Roles:
 	 * admin
@@ -94,6 +101,23 @@ public class UserManagement {
 		
 		if(Arrays.equals(password, user.password.toCharArray()))
 			return true;
+
+		return false;
+	}
+
+	public boolean isValid2(String username, char[] password) {
+		if(null == username || null == password)
+			return false;
+		
+		try {
+			List<UserSecurityEntity> list = dbManagement.getUserSecurity(username);
+			if(list.size() > 0) {
+				if(Arrays.equals(password, list.get(0).getPasswd().toCharArray()))
+					return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		return false;
 	}

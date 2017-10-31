@@ -37,7 +37,7 @@ public class AuthorizeServlet extends HttpServlet {
 		String passwd = request.getParameter("passwd");
 		System.out.println("username: " + username + " passwd:" + passwd);
 
-		if(null==username || null == passwd || !userManagement.isValid(username, passwd.toCharArray())) {
+		if(null==username || null == passwd || !userManagement.isValid2(username, passwd.toCharArray())) {
 			OAuthProblemException ex = OAuthProblemException.error("missing/wrong username or passwd");
 			
 			// TODO: 这个地方有问题，还没时间调试。
