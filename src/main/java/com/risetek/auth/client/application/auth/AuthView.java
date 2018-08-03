@@ -223,11 +223,13 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 	}
 
 	public void setClientID(String clientId) {
+		/*
 		Element span = DOM.createSpan();
 		Element div = DOM.createDiv();
 		span.setInnerHTML("授&nbsp;权:&nbsp;" + clientId);
 		div.setInnerHTML(span.getString());
 		titlePanel.getElement().setInnerHTML(div.getString());
+		*/
         username_box.setFocus(true);
 	}
 }

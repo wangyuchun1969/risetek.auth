@@ -47,7 +47,7 @@ public class UserResourceServlet extends HttpServlet {
 			builder.setHeaderAlgorithm("RS256");
 			builder.setHeaderType("JWT");
 			builder.setHeaderContentType("JWT");
-			builder.setClaimsSetIssuer("accounts.risetek.com");
+			builder.setClaimsSetIssuer("accounts.yun74.com");
 			builder.setClaimsSetJwdId("UUID");
 
 			builder.setClaimsSetIssuedAt(new Date().getTime());
@@ -117,7 +117,7 @@ public class UserResourceServlet extends HttpServlet {
 			builder.setHeaderAlgorithm("RS256");
 			builder.setHeaderType("JWT");
 			builder.setHeaderContentType("JWT");
-			builder.setClaimsSetIssuer("accounts.risetek.com");
+			builder.setClaimsSetIssuer("accounts.yun74.com");
 			builder.setClaimsSetJwdId("UUID");
 
 			builder.setClaimsSetIssuedAt(new Date().getTime());

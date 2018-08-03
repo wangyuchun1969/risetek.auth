@@ -43,7 +43,7 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
         
         Image logo = new Image(Icons.resources.RisetekLogo());
         logo.setStyleName(style.logo());
-        head_black.add(logo);
+        // head_black.add(logo);
         head_black.setCellWidth(logo, "220px");
         
         /*
