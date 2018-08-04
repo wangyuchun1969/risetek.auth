@@ -24,6 +24,12 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
+		Injector injector = (Injector) servletContext.getAttribute(Injector.class.getName());
+		if(null != injector) {
+			DbManagement dbm = injector.getInstance(DbManagement.class);
+			dbm.closeConnection();
+		}
+
 		super.contextDestroyed(servletContextEvent);
 	}
 	

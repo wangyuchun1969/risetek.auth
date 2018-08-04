@@ -39,14 +39,25 @@ public class DbManagement {
 	private Connection connection;
 	public DbManagement() {
 		try {
-			connection = DriverManager.getConnection("jdbc:hsqldb:file:/risetekauth/db", "SA", "");
+			Class.forName("org.hsqldb.jdbc.JDBCDriver");
+			connection = DriverManager.getConnection("jdbc:hsqldb:file:/risetekauth/db; shutdown=true", "SA", "");
 			System.out.println("!!!!!!!!!! ---------------- connection successed ---------------- !!!!!!!!!!!!!!!!!!");
 			connection.setAutoCommit(true);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public void closeConnection() {
+		try {
+	        connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connection = null;
+		}
+	}
+	
 	public void development_init_db() throws SQLException {
 		int result;
 		Statement stmt = connection.createStatement();
