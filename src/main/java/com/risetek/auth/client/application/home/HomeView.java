@@ -3,8 +3,6 @@ package com.risetek.auth.client.application.home;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -17,6 +15,7 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
 
     private SimplePanel panel = new SimplePanel();
     private Button securityButton = new Button("Security");
+    private Button resourcesButton = new Button("权限编辑");
     private Button dbInitButton = new Button("初始化数据");
     @Inject
     HomeView() {
@@ -29,19 +28,9 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());
 		
-		securityButton.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				getUiHandlers().gotoSecurity();
-			}});
-		
-		dbInitButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				getUiHandlers().dbInit();
-			}});
+		securityButton.addClickHandler(event->getUiHandlers().gotoSecurity());
+		resourcesButton.addClickHandler(event->getUiHandlers().gotoResources());
+		dbInitButton.addClickHandler(event->getUiHandlers().dbInit());
     }
 
 	private Widget createBootMark() {

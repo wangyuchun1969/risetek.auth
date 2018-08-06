@@ -107,7 +107,7 @@ public class DbManagement {
 	public List<UserSecurityEntity> getUserSecurity(String name) throws SQLException {
 		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
 		String sql = "SELECT id, name, passwd, email, notes FROM security WHERE name = " + name + ";";
-		//System.out.println("DEBUG:" + sql);
+		System.out.println("DEBUG:" + sql);
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
@@ -327,6 +327,11 @@ public class DbManagement {
 		add_one_user("wangxu@risetek.com", "wangxu", "wangxu@risetek.com", "wangxu@risetek.com");
 		add_resource("wangxu@risetek.com", "roles", "admin:developer:maintenance:operator:visitor");
 		add_resource("wangxu@risetek.com", "teams", "-1");
+		
+		//China ComService
+		add_one_user("wangp@ccs", "wangp", "wangp@ccs", "wangp@ccs");
+		add_resource("wangp@ccs", "roles", "admin:developer:maintenance:operator:visitor");
+		add_resource("wangp@ccs", "teams", "-1");
 		
 		getUserResourceByName("wangyc@risetek.com", "wangyc@risetek.com");
 	}

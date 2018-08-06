@@ -80,6 +80,14 @@ public class UserManagement {
 		wangx.roles.add("visitor");
 		wangx.teams.add(new Integer(-1));
 		
+		UserInformation wangp = new UserInformation();
+		wangp.password = "wangp";
+		wangp.roles.add("admin");
+		wangp.roles.add("maintenance");
+		wangp.roles.add("operator");
+		wangp.roles.add("visitor");
+		wangp.teams.add(new Integer(-1));
+
 		users.put("wangyc", wangyc_visitor);
 		users.put("wangyc@risetek.com", wangyc);
 		users.put("test@risetek.com", tester);
@@ -87,6 +95,7 @@ public class UserManagement {
 		users.put("sdy@risetek.com", tester13);
 		users.put("zhangl@risetek.com", zhangl);
 		users.put("wangxu@risetek.com", wangx);
+		users.put("wangp@ccs", wangp);
 	}
 	
 	public UserInformation getUserInfomation(String username) {
@@ -111,6 +120,7 @@ public class UserManagement {
 		
 		try {
 			List<UserSecurityEntity> list = dbManagement.getUserSecurity(username);
+			System.out.println("get user list size:" + list.size());
 			if(list.size() > 0) {
 				if(Arrays.equals(password, list.get(0).getPasswd().toCharArray()))
 					return true;

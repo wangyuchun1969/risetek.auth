@@ -83,6 +83,11 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	}
 
 	@Override
+	public void gotoResources() {
+		placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.resource).build());
+	}
+
+	@Override
 	public void dbInit() {
 		DbInitAction action = new DbInitAction();
 		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
