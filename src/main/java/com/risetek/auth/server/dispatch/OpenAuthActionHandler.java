@@ -23,8 +23,8 @@ public class OpenAuthActionHandler implements ActionHandler<OpenAuthAction, GetR
 
 		String username = action.username;
 		String passwd = action.password;
-		System.out.println("username: " + username + " passwd:" + passwd);
-
+		System.out.println("access from OpenAuthActionHandler : username: " + username + " passwd:" + passwd);
+		// TODO: 应用授权服务，应该按照应用ID来提供授权。
 		if (null == username || null == passwd || !userManagement.isValid(username, passwd.toCharArray())) {
 			return new GetResult<OpenAuthInfo>(null);
 		}

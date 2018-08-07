@@ -31,8 +31,9 @@ public class MyAuthorizingRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
 			throws AuthenticationException {
 		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-		// System.out.println("In EgAuthorizingRealm.doGetAuthenticationInfo for: " + upToken.getUsername() + "/" + new String(upToken.getPassword()) + " - remember=" + upToken.isRememberMe());
-		
+		//System.out.println("In EgAuthorizingRealm.doGetAuthenticationInfo for: " + upToken.getUsername() + "/" + new String(upToken.getPassword()) + " - remember=" + upToken.isRememberMe());
+
+		// TODO: 管理授权服务，是本服务的管理授权
 		if(userManagement.isValid(upToken.getUsername(), upToken.getPassword())) {
 			SecurityUtils.getSubject().getSession().setAttribute("user", userManagement.getUserInfomation(upToken.getUsername()));
 			return new SimpleAuthenticationInfo(upToken.getUsername(), upToken.getPassword(), getName());

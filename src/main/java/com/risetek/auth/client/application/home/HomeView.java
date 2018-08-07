@@ -24,6 +24,7 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
         
         flows.add(panel);
         flows.add(securityButton);
+        flows.add(resourcesButton);
         flows.add(dbInitButton);
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());

@@ -32,6 +32,8 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 		
 		AuthorityInfo info = new AuthorityInfo();
 		info.setLogin(subject.isAuthenticated());
+		/*
+		// Debug messages
 		if(info.isLogin()) {
 			try {
 				boolean[] roleResult = subject.hasRoles(Arrays.asList(checkRoles));
@@ -47,6 +49,7 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 				e.printStackTrace();
 			}
 		}
+		*/
 		return new GetResult<AuthorityInfo>(info);
 	}
 
