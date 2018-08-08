@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -22,10 +21,8 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
     private final DockLayoutPanel mainDockPanel = new DockLayoutPanel(Unit.PX);
     private final SimplePanel head_black_wrap = new SimplePanel();
     private final HorizontalPanel head_black = new HorizontalPanel();
-    private final Label SocketSlot = new Label();
     private final SimplePanel menuSlot = new SimplePanel();
     private final ResizeLayoutPanel main = new ResizeLayoutPanel();
-    private final Label total_users = new Label();
     private final ApplicationStyle style = ApplicationBundle.resources.style();
 
 	@Inject
@@ -46,18 +43,6 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
         // head_black.add(logo);
         head_black.setCellWidth(logo, "220px");
         
-        /*
-        head_black.add(total_users);
-        total_users.setStyleName(style.clients());
-        head_black.setCellWidth(total_users, "80px");
-        head_black.setCellHorizontalAlignment(total_users, HorizontalPanel.ALIGN_LEFT);
-
-        head_black.add(SocketSlot);
-        SocketSlot.setStyleName(style.builder());
-        head_black.setCellWidth(SocketSlot, "400px");
-        head_black.setCellHorizontalAlignment(SocketSlot, HorizontalPanel.ALIGN_LEFT);
-		*/
-        
         head_black.add(menuSlot);
         menuSlot.setStyleName(style.menuSolt());
         head_black.setCellHorizontalAlignment(menuSlot, HorizontalPanel.ALIGN_RIGHT);
@@ -69,7 +54,6 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
         main.setStyleName(style.mainSlot());
         // Add Resize handler
         Window.addResizeHandler(this);
-        setTotalUsers(0);
     }
 
     @Override
@@ -83,16 +67,6 @@ public class ApplicationView extends ViewWithUiHandlers<ApplicationUiHandlers> i
             super.setInSlot(slot, content);
         }
     }
-
-	@Override
-	public void UpdateSocketStatus(String status) {
-		SocketSlot.setText(status);
-	}
-
-	@Override
-	public void setTotalUsers(int number) {
-		total_users.setText(Integer.toString(number));
-	}
 
 	@Override
 	public void onResize(ResizeEvent event) {

@@ -15,8 +15,6 @@ import com.gwtplatform.mvp.client.proxy.Proxy;
 public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView, ApplicationPresenter.MyProxy> 
 	implements ApplicationUiHandlers {
     public interface MyView extends View, HasUiHandlers<ApplicationUiHandlers>{
-    	void UpdateSocketStatus(String status);
-    	void setTotalUsers(int number);
     }
 
     public static final NestedSlot SLOT_SetMainContent = new NestedSlot();
@@ -38,15 +36,5 @@ public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView,
 	public void onReveal() {
 		// To Call menu module.
 //        fireEvent(new RevealDefaultLinkColumnEvent());
-	}
-
-	@Override
-	public void UpdateSocketStatus(String status) {
-		getView().UpdateSocketStatus(status);
-	}
-
-	@Override
-	public void setTotalUsers(int number) {
-		getView().setTotalUsers(number);
 	}
 }

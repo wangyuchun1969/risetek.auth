@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
@@ -43,8 +44,12 @@ public class LoginWidget extends SimplePanel {
 	
 	private final Button loginSubmit = new Button();
 
-	public LoginWidget(LoginSubmitHandle submitHandler) {
-		this.submitHandler = submitHandler;
+	public LoginWidget(LoginSubmitHandle submithandler) {
+		style.ensureInjected();
+		setStyleName("loginWidget");
+
+		submitHandler = submithandler;
+		setSize("100%", "100%");
 		
 		loginSubmit.addClickHandler(new ClickHandler() {
 			@Override
@@ -70,13 +75,11 @@ public class LoginWidget extends SimplePanel {
 			}
 		});
 
-		style.ensureInjected();
-		setStyleName("loginWidget");
 		backgroundPanel.setStyleName(style.background());
 
 		Element div = DOM.createDiv();
 		Element span = DOM.createSpan();
-		span.setInnerHTML("登&nbsp;录");
+		span.setInnerHTML("OpenAuth管理账户登录");
 		div.setInnerHTML(span.getString());
 		title.getElement().setInnerHTML(div.getString());
 		title.setStyleName(style.topTitle());
@@ -112,7 +115,7 @@ public class LoginWidget extends SimplePanel {
 
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if(event.getCharCode() == '\r') {
+				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
 					loginSubmit.click();
 				} else
 					reset();
@@ -152,7 +155,6 @@ public class LoginWidget extends SimplePanel {
 
 		SimplePanel password_icon = new SimplePanel();
 		password_icon.setStyleName(style.box_icon());
-		//password_icon.getElement().setInnerText("口令:");
 		password_img.setStyleName(style.box_icon_img());
 		password_icon.add(password_img);
 		password_flowpanel.add(password_icon);
@@ -170,7 +172,7 @@ public class LoginWidget extends SimplePanel {
 
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if(event.getCharCode() == '\r') {
+				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
 					loginSubmit.click();
 				} else
 					reset();
@@ -211,6 +213,7 @@ public class LoginWidget extends SimplePanel {
 		getElement().setPropertyString("align", "center");
 	}
 
+	@Override
 	protected void onLoad() {
 		reset();
 		password_input_box.setText(null);
