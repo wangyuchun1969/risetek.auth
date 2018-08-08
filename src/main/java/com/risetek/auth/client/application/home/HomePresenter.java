@@ -24,6 +24,7 @@ import com.risetek.auth.client.security.LoggedInGatekeeper;
 import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.DbInitAction;
 import com.risetek.auth.shared.GetNoResult;
+import com.risetek.auth.shared.LogInOutAction;
 
 public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter.MyProxy>
 	implements MyUiHandlers {
@@ -72,7 +73,7 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 	
 	@Override
     protected void onReset() {
-		GWT.log("onReset");
+		GWT.log("HomePresenter onReset");
     	super.onReset();
     	upDateUser();
     }
@@ -99,6 +100,21 @@ public class HomePresenter extends Presenter<HomePresenter.MyView, HomePresenter
 			@Override
 			public void onSuccess(GetNoResult result) {
 				Window.alert("Database Init success");
+			}
+		});
+	}
+
+	@Override
+	public void logout() {
+		LogInOutAction action = new LogInOutAction(null);
+		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(GetNoResult result) {
+				user.forceSync();
 			}
 		});
 	}

@@ -14,7 +14,7 @@ public class ClientModule extends AbstractPresenterModule {
     	// System Special
         install(new DefaultModule
                 .Builder()
-                .defaultPlace(NameTokens.security)
+                .defaultPlace(NameTokens.HOME)
                 .errorPlace(NameTokens.HOME)
                 .unauthorizedPlace(NameTokens.login)
                 .build());

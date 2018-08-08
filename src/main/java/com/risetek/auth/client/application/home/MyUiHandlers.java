@@ -7,4 +7,5 @@ interface MyUiHandlers extends UiHandlers {
 	void gotoSecurity();
 	void gotoResources();
 	void dbInit();
+	void logout();
 }

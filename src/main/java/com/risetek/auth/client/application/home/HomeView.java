@@ -17,6 +17,7 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
     private Button securityButton = new Button("Security");
     private Button resourcesButton = new Button("权限编辑");
     private Button dbInitButton = new Button("初始化数据");
+    private Button logoutButton = new Button("Logout");
     @Inject
     HomeView() {
 		FlowPanel flows = new FlowPanel();
@@ -26,12 +27,14 @@ public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePr
         flows.add(securityButton);
         flows.add(resourcesButton);
         flows.add(dbInitButton);
+        flows.add(logoutButton);
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());
 		
 		securityButton.addClickHandler(event->getUiHandlers().gotoSecurity());
 		resourcesButton.addClickHandler(event->getUiHandlers().gotoResources());
 		dbInitButton.addClickHandler(event->getUiHandlers().dbInit());
+		logoutButton.addClickHandler(event->getUiHandlers().logout());
     }
 
 	private Widget createBootMark() {

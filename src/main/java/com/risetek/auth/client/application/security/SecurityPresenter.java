@@ -63,7 +63,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 
 	@Override
     protected void onReset() {
-		GWT.log("onReset");
+		GWT.log("SecurityPresenter onReset");
     	super.onReset();
     }
 
