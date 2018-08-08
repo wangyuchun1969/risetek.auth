@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.risetek.auth.server.DbManagement;
 import com.risetek.auth.server.UserManagement;
+import com.risetek.auth.shared.OpenAuthInfo;
 import com.risetek.auth.shared.UserResourceEntity;
 
 //PATH /oauth/user
@@ -34,15 +35,16 @@ public class UserResourceServlet extends HttpServlet {
 
 	@Inject
 	private UserManagement userManagement;
-	
+/*	
 	protected void doGetV1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
 			String accessToken = oauthRequest.getAccessToken();
-			String username = userManagement.getUsernameByAccessToken(accessToken);
-			if(null == username)
+			OpenAuthInfo info = userManagement.getInfoByAccessToken(accessToken);
+			if(null == info)
 				throw OAuthProblemException.error("invalid client token");
 				
+			String username = info.getUsername(); // userManagement.getUsernameByAccessToken(accessToken);
 			JWT.Builder builder = new JWT.Builder();
 			builder.setHeaderAlgorithm("RS256");
 			builder.setHeaderType("JWT");
@@ -73,7 +75,7 @@ public class UserResourceServlet extends HttpServlet {
 				builder.setClaimsSetCustomField("teams", sb.toString());
 			}
 			
-			builder.setSignature("risetek-yun74-id");
+			builder.setSignature(info.getClient_id());
 			
 			JWTWriter writer = new JWTWriter();
 			String jwts = writer.write(builder.build());
@@ -96,7 +98,7 @@ public class UserResourceServlet extends HttpServlet {
 			}
 		}
 	}
-
+*/
 
 	/*
 	 * TODO:
@@ -109,9 +111,11 @@ public class UserResourceServlet extends HttpServlet {
 		try {
 			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
 			String accessToken = oauthRequest.getAccessToken();
-			String username = userManagement.getUsernameByAccessToken(accessToken);
-			if(null == username)
+			OpenAuthInfo info = userManagement.getInfoByAccessToken(accessToken);
+			if(null == info)
 				throw OAuthProblemException.error("invalid client token");
+				
+			String username = info.getUsername(); // userManagement.getUsernameByAccessToken(accessToken);
 				
 			JWT.Builder builder = new JWT.Builder();
 			builder.setHeaderAlgorithm("RS256");
@@ -125,27 +129,8 @@ public class UserResourceServlet extends HttpServlet {
 
 			builder.setClaimsSetSubject(username);
 
-/*			
-			List<String> roles = userManagement.getRoles(username);
-			if(roles != null) {
-				StringBuffer sb = new StringBuffer();
-				for(String role:roles)
-					sb.append(role).append(":");
-				
-				builder.setClaimsSetCustomField("roles", sb.toString());
-			}
-
-			List<Integer> teams = userManagement.getTeams(username);
-			if(roles != null) {
-				StringBuffer sb = new StringBuffer();
-				for(Integer team:teams)
-					sb.append(team.toString()).append(":");
-				
-				builder.setClaimsSetCustomField("teams", sb.toString());
-			}
-*/
 			try {
-				List<UserResourceEntity> list = dbManagement.getUserResourceByName(username, "risetek-yun74-id");
+				List<UserResourceEntity> list = dbManagement.getUserResourceByName(username, info.getClient_id());
 				for(UserResourceEntity entity:list)
 					builder.setClaimsSetCustomField(entity.getKey(), entity.getValue());
 				
@@ -154,7 +139,7 @@ public class UserResourceServlet extends HttpServlet {
 				throw new IOException("database failed: " + e.getMessage());
 			}
 			
-			builder.setSignature("risetek-yun74-id");
+			builder.setSignature(info.getClient_id());
 			
 			JWTWriter writer = new JWTWriter();
 			String jwts = writer.write(builder.build());

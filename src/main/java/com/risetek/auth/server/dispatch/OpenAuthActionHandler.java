@@ -23,7 +23,7 @@ public class OpenAuthActionHandler implements ActionHandler<OpenAuthAction, GetR
 
 		String username = action.username;
 		String passwd = action.password;
-		System.out.println("access from OpenAuthActionHandler : username: " + username + " passwd:" + passwd);
+		System.out.println("access from OpenAuthActionHandler : username: " + username + " passwd:" + passwd + " application:" + action.client_id);
 		// TODO: 应用授权服务，应该按照应用ID来提供授权。
 		if (null == username || null == passwd || !userManagement.isValid(username, passwd.toCharArray())) {
 			return new GetResult<OpenAuthInfo>(null);
@@ -37,7 +37,7 @@ public class OpenAuthActionHandler implements ActionHandler<OpenAuthAction, GetR
 			OAuthIssuerImpl oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 			// validateRedirectionURI(oauthRequest)
 			String token = oauthIssuerImpl.authorizationCode();
-			userManagement.setToken(username, token);
+			
 			OpenAuthInfo info = new OpenAuthInfo();
 			
 			System.out.println("callback: " + action.redirect_uri);
@@ -45,6 +45,9 @@ public class OpenAuthActionHandler implements ActionHandler<OpenAuthAction, GetR
 
 			info.setCallback_url(action.redirect_uri);
 			info.setToken(token);
+			info.setClient_id(action.client_id);
+			info.setUsername(username);
+			userManagement.setInfoByToken(token, info);
 			return new GetResult<OpenAuthInfo>(info);
 			// if something goes wrong
 		} catch (OAuthSystemException e) {

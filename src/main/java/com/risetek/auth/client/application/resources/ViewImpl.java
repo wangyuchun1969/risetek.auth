@@ -77,7 +77,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					getUiHandlers().deleteResource(object);
+					// getUiHandlers().deleteResource(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
@@ -85,6 +85,52 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		};
 		celltable.addColumn(id_Column, "ID");
 		celltable.setColumnWidth(id_Column, 60, Unit.PX);
+
+		CustomColumn<UserResourceEntity> application_Column = new CustomColumn<UserResourceEntity>("tips") {
+			@Override
+			public String getValue(UserResourceEntity object) {
+				return object.getApplication();
+			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserResourceEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					// getUiHandlers().editResources(object);
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
+			}
+		};
+
+		celltable.addColumn(application_Column, "应用");
+		celltable.setColumnWidth(application_Column, 160, Unit.PX);
+		
+		CustomColumn<UserResourceEntity> username_Column = new CustomColumn<UserResourceEntity>("tips") {
+			@Override
+			public String getValue(UserResourceEntity object) {
+				return object.getUsername();
+			}
+
+			@Override
+			public void onBrowserEvent(Context context, Element elem,
+					final UserResourceEntity object, NativeEvent event) {
+				if (object == null)
+					return;
+				String type = event.getType();
+				if ("click".equals(type)) {
+					// getUiHandlers().editResources(object);
+				}
+				else
+					super.onBrowserEvent(context, elem, object, event);
+			}
+		};
+
+		celltable.addColumn(username_Column, "使用者");
+		celltable.setColumnWidth(username_Column, 160, Unit.PX);
 		
 		CustomColumn<UserResourceEntity> ident_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
@@ -99,7 +145,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					getUiHandlers().editResources(object);
+					// getUiHandlers().editResources(object);
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);
@@ -129,7 +175,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 			}
 		};
 		
-		celltable.addColumn(notes_Column, "备注");
+		celltable.addColumn(notes_Column, "资源");
 
 		// ------------------------------------------------------------------
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {

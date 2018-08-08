@@ -133,8 +133,9 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 			Window.alert("something wrong!");
 			return;
 		}
-		entity.setAppId(appid);
-		entity.setSecurityId(keyid);
+		// TODO: how to get application and key?
+		//entity.setAppId(appid);
+		//entity.setSecurityId(keyid);
 		editor.onEdit(entity);
 	}
 

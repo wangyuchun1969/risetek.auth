@@ -14,10 +14,13 @@ public class MyServletModule extends ServletModule {
 	protected void configureServlets() {
 		serve("/dispatch/*").with(DispatchServiceImpl.class);
 		serve("/oauth/token").with(TokenServlet.class);
-		serve("/oauth/authorize").with(AuthorizeServlet.class);
 		serve("/oauth/user").with(UserResourceServlet.class);
+		// serve("/oauth/authorize").with(AuthorizeServlet.class);
+		
+		// ========================================================================
 		//shiro filter
         filter("/dispatch/*").through(GuiceShiroFilter.class);
+		// ========================================================================
         
         bind(DbManagement.class).asEagerSingleton();
 	}

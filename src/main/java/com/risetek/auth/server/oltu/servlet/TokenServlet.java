@@ -20,6 +20,7 @@ import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.risetek.auth.server.UserManagement;
+import com.risetek.auth.shared.OpenAuthInfo;
 
 
 // PATH /oauth/token
@@ -40,21 +41,20 @@ public class TokenServlet extends HttpServlet {
 			OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
 
 			String authzCode = oauthRequest.getCode();
-			System.out.println("code is:" + authzCode);
-			
-			String username = userManagement.getUsernameByToken(authzCode);
-			if(null == username) {
-				System.out.println("can't find authzCode: " + authzCode);
-				throw OAuthProblemException.error("invalid client token");
-			}
-
 			// some code
 			String accessToken = oauthIssuerImpl.accessToken();
 			String refreshToken = oauthIssuerImpl.refreshToken();
-			System.out.println("accessToken is:" + accessToken + " username:" + username);
 
-			userManagement.setAccessToken(username, accessToken);
+			System.out.println("code is:" + authzCode);
 			
+			OpenAuthInfo info = userManagement.getInfoByToken(authzCode);
+			if(null == info)
+				throw OAuthProblemException.error("invalid client token");
+
+			System.out.println("accessToken is:" + accessToken + " username:" + info.getUsername());
+
+			userManagement.setInfoByAccessToken(accessToken, info);
+
 			// some code
 			OAuthResponse oauthResponse = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK).setAccessToken(accessToken)
 					.setExpiresIn("3600").setRefreshToken(refreshToken).buildJSONMessage();

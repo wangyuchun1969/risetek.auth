@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.shared.OpenAuthInfo;
 import com.risetek.auth.shared.UserSecurityEntity;
 
 @Singleton
@@ -31,9 +32,6 @@ public class UserManagement {
 	}
 
 	private Map<String, UserInformation> users = new HashMap<>();
-	
-	private Map<String, String> tokens = new HashMap<>();
-	private Map<String, String> accessTokens = new HashMap<>();
 
 	public UserManagement() {
 		UserInformation wangyc = new UserInformation();
@@ -145,7 +143,11 @@ public class UserManagement {
 			return user.teams;
 		return null;
 	}
+/*	
 	
+	private Map<String, String> tokens = new HashMap<>();
+	private Map<String, String> accessTokens = new HashMap<>();
+
 	public void setToken(String username, String token) {
 		tokens.put(token, username);
 	}
@@ -161,5 +163,21 @@ public class UserManagement {
 	public String getUsernameByAccessToken(String token) {
 		return accessTokens.get(token);
 	}
+*/
+	private Map<String, OpenAuthInfo> tokenInfo = new HashMap<>();
+	public void setInfoByToken(String token, OpenAuthInfo info) {
+		tokenInfo.put(token, info);
+	}
+	
+	public OpenAuthInfo getInfoByToken(String token) {
+		return tokenInfo.get(token);
+	}
 
+	private Map<String, OpenAuthInfo> accessInfo = new HashMap<>();
+	public void setInfoByAccessToken(String token, OpenAuthInfo info) {
+		accessInfo.put(token, info);
+	}
+	public OpenAuthInfo getInfoByAccessToken(String token) {
+		return accessInfo.get(token);
+	}
 }

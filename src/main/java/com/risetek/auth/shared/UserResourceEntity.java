@@ -9,17 +9,17 @@ public class UserResourceEntity implements IsSerializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getSecurityId() {
-		return securityId;
+	public String getUsername() {
+		return username;
 	}
-	public void setSecurityId(int securityId) {
-		this.securityId = securityId;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public int getAppId() {
-		return appId;
+	public String getApplication() {
+		return application;
 	}
-	public void setAppId(int appId) {
-		this.appId = appId;
+	public void setApplication(String application) {
+		this.application = application;
 	}
 	public String getKey() {
 		return key;
@@ -34,8 +34,8 @@ public class UserResourceEntity implements IsSerializable {
 		this.value = value;
 	}
 	private int id;
-	private int securityId;
-	private int appId;
+	private String username;
+	private String application;
 	private String key;
 	private String value;
 }

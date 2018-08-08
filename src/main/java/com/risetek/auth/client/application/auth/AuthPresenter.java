@@ -1,6 +1,5 @@
 package com.risetek.auth.client.application.auth;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;

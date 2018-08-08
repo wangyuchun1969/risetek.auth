@@ -28,7 +28,7 @@ public class DatabaseResourceMaintanceActionHandler implements ActionHandler<Dat
 			}
 		} else if("insert".equals(action.operator)) {
 			try {
-				dbManagement.addUserResource(action.resource);
+				dbManagement.addUserResourceIndirctor(action.resource);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new ActionException(e.toString());

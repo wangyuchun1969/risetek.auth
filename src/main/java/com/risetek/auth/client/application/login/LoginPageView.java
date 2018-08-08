@@ -3,7 +3,6 @@ package com.risetek.auth.client.application.login;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.risetek.auth.client.application.login.LoginWidget.LoginSubmitHandle;

@@ -35,7 +35,7 @@ public class AuthorizeServlet extends HttpServlet {
 
 		String username = request.getParameter("username");
 		String passwd = request.getParameter("passwd");
-		System.out.println("username: " + username + " passwd:" + passwd);
+		System.out.println("AuthorizeServlet username: " + username + " passwd:" + passwd);
 
 		if(null==username || null == passwd || !userManagement.isValid2(username, passwd.toCharArray())) {
 			OAuthProblemException ex = OAuthProblemException.error("missing/wrong username or passwd");
@@ -62,7 +62,9 @@ public class AuthorizeServlet extends HttpServlet {
 				OAuthIssuerImpl oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 				// validateRedirectionURI(oauthRequest)
 				String token = oauthIssuerImpl.authorizationCode();
-				userManagement.setToken(username, token);
+				
+				// TODO: something wrong?
+				// userManagement.setToken(username, token);
 				
 				// build OAuth response
 				OAuthResponse resp = OAuthASResponse.authorizationResponse(request, HttpServletResponse.SC_FOUND)
