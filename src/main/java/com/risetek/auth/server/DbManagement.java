@@ -106,7 +106,7 @@ public class DbManagement {
 
 	public List<UserSecurityEntity> getUserSecurity(String name) throws SQLException {
 		List<UserSecurityEntity> securitys = new Vector<UserSecurityEntity>();
-		String sql = "SELECT id, name, passwd, email, notes FROM security WHERE name = " + name + ";";
+		String sql = "SELECT id, name, passwd, email, notes FROM security WHERE name = '" + name + "';";
 		System.out.println("DEBUG:" + sql);
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
