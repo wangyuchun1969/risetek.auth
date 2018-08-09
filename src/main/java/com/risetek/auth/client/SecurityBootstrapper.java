@@ -19,6 +19,7 @@ public class SecurityBootstrapper implements Bootstrapper {
 	private final PlaceManager placeManager;
 	private final CurrentUser user;
 	private final DispatchAsync dispatcher;
+	public static boolean authOnly = true;
 	
 	@Inject
 	public SecurityBootstrapper(CurrentUser user, DispatchAsync dispatcher, PlaceManager placeManager) {
@@ -34,6 +35,7 @@ public class SecurityBootstrapper implements Bootstrapper {
 			return;
 		}
 		
+		authOnly = false;
 		dispatcher.execute(new AuthorityAction(), new AsyncCallback<GetResult<AuthorityInfo>>() {
 			@Override
 			public void onFailure(Throwable caught) {
