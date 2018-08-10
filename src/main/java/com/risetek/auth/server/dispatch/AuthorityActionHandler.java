@@ -33,22 +33,14 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 		AuthorityInfo info = new AuthorityInfo();
 		info.setLogin(subject.isAuthenticated());
 
-		// Debug messages
-		if(info.isLogin()) {
-			try {
-				boolean[] roleResult = subject.hasRoles(Arrays.asList(checkRoles));
-				for (int i = 0; i < checkRoles.length; i++) {
-					info.getRoles().put(checkRoles[i], roleResult[i]);
-					System.out.println("Role: " + checkRoles[i] + " " + (roleResult[i] ? "powered" : "forbidden"));
-				}
-				System.out.println("subject.isAuthenticated() is: " + (info.isLogin() ? "login" : "logout"));
-				
-				if( subject.isPermitted("user:login") )
-					System.out.println("subject isPermitted() for user:login");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			boolean[] roleResult = subject.hasRoles(Arrays.asList(checkRoles));
+			for (int i = 0; i < checkRoles.length; i++)
+				info.getRoles().put(checkRoles[i], roleResult[i]);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 		return new GetResult<AuthorityInfo>(info);
 	}
 

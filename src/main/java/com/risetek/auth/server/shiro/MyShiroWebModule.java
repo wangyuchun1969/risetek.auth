@@ -22,6 +22,7 @@ public class MyShiroWebModule extends ShiroWebModule {
     	bindRealm().to(MyAuthorizingRealm.class).asEagerSingleton();
     	
         bindConstant().annotatedWith(Names.named("shiro.globalSessionTimeout")).to(30000L);
+        bindConstant().annotatedWith(Names.named("securityManager.rememberMeManager.cipherKey")).to("risetek");
         
         // 静态页面信息都可以访问
         addFilterChain("/risetek/**", ANON);
