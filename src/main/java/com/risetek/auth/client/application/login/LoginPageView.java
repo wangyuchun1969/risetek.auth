@@ -16,7 +16,7 @@ class LoginPageView extends ViewWithUiHandlers<LoginUiHandlers> implements Login
 			getUiHandlers().Login(username, password);
 		}});
     
-	private DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
+	private final DockLayoutPanel dockPanel = new DockLayoutPanel(Unit.PX);
 	
     @Inject
     public LoginPageView() {

@@ -9,10 +9,9 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.AuthorityChangedEvent;
 import com.risetek.auth.client.AuthorityChangedEvent.AuthorityChangedHandler;
-import com.risetek.auth.client.place.NameTokens;
+import com.risetek.auth.client.UserStatusChangeEvent;
 import com.risetek.auth.shared.AuthorityAction;
 import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetResult;
@@ -70,7 +69,7 @@ public class CurrentUser implements AuthorityChangedHandler {
 		for( Entry<String, Boolean>  e : currentAuthorityInfo.getRoles().entrySet() )
 			GWT.log("Current have: " + e.getKey() + " " + (e.getValue() ? "powered" : "forribden"));
 		
-		// eventBus.fireEvent(new UserStatusChangeEvent());
+		eventBus.fireEvent(new UserStatusChangeEvent());
 	}
 
 	public AuthorityInfo getAuthorityInfo() {

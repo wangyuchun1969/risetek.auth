@@ -11,6 +11,8 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.presenter.slots.NestedSlot;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.Proxy;
+import com.risetek.auth.client.SecurityBootstrapper;
+import com.risetek.auth.client.RevealDefaultLinkColumnHandler.RevealDefaultLinkColumnEvent;
 
 public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView, ApplicationPresenter.MyProxy> 
 	implements ApplicationUiHandlers {
@@ -35,6 +37,7 @@ public class ApplicationPresenter extends Presenter<ApplicationPresenter.MyView,
 	@Override
 	public void onReveal() {
 		// To Call menu module.
-//        fireEvent(new RevealDefaultLinkColumnEvent());
+		if(!SecurityBootstrapper.authOnly)
+			fireEvent(new RevealDefaultLinkColumnEvent());
 	}
 }

@@ -6,35 +6,50 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.risetek.auth.client.generator.IBuilderStamp;
 
 public class HomeView extends ViewWithUiHandlers<MyUiHandlers> implements HomePresenter.MyView {
-
-    private SimplePanel panel = new SimplePanel();
-    private Button securityButton = new Button("Security");
-    private Button resourcesButton = new Button("权限编辑");
+	private final SimplePanel panel = new SimplePanel();
     private Button dbInitButton = new Button("初始化数据");
-    private Button logoutButton = new Button("Logout");
+    
+	private final ResBundle.Style style = ResBundle.resources.style();
+    
     @Inject
     HomeView() {
-		FlowPanel flows = new FlowPanel();
-        initWidget(flows);
+    	style.ensureInjected();
+
+    	SimplePanel viewPanel = new SimplePanel();
+    	viewPanel.setStyleName(style.view_panel());
+		// set myself on center
+		viewPanel.getElement().setPropertyString("align", "center");
+        initWidget(viewPanel);
+
+        FlowPanel flows = new FlowPanel();
+        flows.setStyleName(style.flow_panel());
+        viewPanel.add(flows);
+
+        SimplePanel space = new SimplePanel();
+        space.setStyleName(style.space_panel());
+        flows.add(space);
+        
+        Label label = new Label("我想实现一个OpenAuth的微服务");
+        label.setStyleName(style.notes_mydream());
+        flows.add(label);
+
+        space = new SimplePanel();
+        space.setStyleName(style.space_panel());
+        flows.add(space);
         
         flows.add(panel);
-        flows.add(securityButton);
-        flows.add(resourcesButton);
-        flows.add(dbInitButton);
-        flows.add(logoutButton);
+//        flows.add(dbInitButton);
 		// boot mark, copyright, etc.
 		flows.add(createBootMark());
 		
-		securityButton.addClickHandler(event->getUiHandlers().gotoSecurity());
-		resourcesButton.addClickHandler(event->getUiHandlers().gotoResources());
 		dbInitButton.addClickHandler(event->getUiHandlers().dbInit());
-		logoutButton.addClickHandler(event->getUiHandlers().logout());
     }
 
 	private Widget createBootMark() {

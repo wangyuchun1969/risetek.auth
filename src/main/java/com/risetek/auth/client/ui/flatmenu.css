@@ -1,0 +1,43 @@
+.dropdown {
+    position:		relative;
+    display:		inline-block;
+	color:			blue;
+	font-size:		24px;
+    z-index: 		10000;
+    cursor:			pointer;
+    background:		white;
+    min-width:		90px;
+	right:			0px;
+}
+
+.namewarp {
+	padding:		0px 20px;
+	margin:			0px;
+	display:		block;
+}
+
+.dropdownContent {
+	display:		none;
+	position:		absolute;
+	background-color: #f9f9f9;
+    min-width:		60px;
+	box-shadow:		0px 8px 16px 0px rgba(0,0,0,0.2);
+	padding:		12px 16px;
+	font-size:		18px;
+	white-space:	nowrap;
+	right:			0px;
+}
+
+.items:hover {
+	color:			red;
+}
+
+.dropdown:hover {
+	color:		red;
+}
+
+.dropdown:hover .dropdownContent {
+    display:		block;
+    color:			blue;
+}
+
