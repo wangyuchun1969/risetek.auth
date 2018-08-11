@@ -67,7 +67,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		CustomColumn<UserResourceEntity> id_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
 			public String getValue(UserResourceEntity object) {
-				return Integer.toString(object.getId());
+				return (null==object)?null:Integer.toString(object.getId());
 			}
 
 			@Override
@@ -89,7 +89,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		CustomColumn<UserResourceEntity> application_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
 			public String getValue(UserResourceEntity object) {
-				return object.getApplication();
+				return (null==object)?null:object.getApplication();
 			}
 
 			@Override
@@ -112,7 +112,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		CustomColumn<UserResourceEntity> username_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
 			public String getValue(UserResourceEntity object) {
-				return object.getUsername();
+				return (null==object)?null:object.getUsername();
 			}
 
 			@Override
@@ -135,7 +135,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		CustomColumn<UserResourceEntity> ident_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
 			public String getValue(UserResourceEntity object) {
-				return object.getKey();
+				return (null==object)?null:object.getKey();
 			}
 
 			@Override
@@ -158,7 +158,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		CustomColumn<UserResourceEntity> notes_Column = new CustomColumn<UserResourceEntity>("tips") {
 			@Override
 			public String getValue(UserResourceEntity object) {
-				return object.getValue();
+				return (null==object)?null:object.getValue();
 			}
 
 			@Override

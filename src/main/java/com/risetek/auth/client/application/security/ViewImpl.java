@@ -67,7 +67,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		CustomColumn<UserSecurityEntity> id_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
-				return Integer.toString(object.getId());
+				return (null==object)?null:Integer.toString(object.getId());
 			}
 
 			@Override
@@ -89,7 +89,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		CustomColumn<UserSecurityEntity> ident_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
-				return object.getUsername();
+				return (null==object)?null:object.getUsername();
 			}
 
 			@Override
@@ -112,7 +112,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		CustomColumn<UserSecurityEntity> passwd_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
-				return "********";
+				return (null==object)?null:"********";
 			}
 
 			@Override
@@ -134,7 +134,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		CustomColumn<UserSecurityEntity> email_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
-				return object.getEmail();
+				return (null==object)?null:object.getEmail();
 			}
 
 			@Override
@@ -157,7 +157,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 		CustomColumn<UserSecurityEntity> notes_Column = new CustomColumn<UserSecurityEntity>("tips") {
 			@Override
 			public String getValue(UserSecurityEntity object) {
-				return object.getNotes();
+				return (null==object)?null:object.getNotes();
 			}
 
 			@Override
