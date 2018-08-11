@@ -8,12 +8,14 @@ import com.risetek.auth.client.application.menu.MenuModule;
 import com.risetek.auth.client.application.resources.ResourcesModule;
 import com.risetek.auth.client.application.security.SecurityModule;
 import com.risetek.auth.client.application.security.editor.SecurityEditorModule;
+import com.risetek.auth.client.application.tools.ToolsModule;
 
 public class ApplicationModule extends AbstractPresenterModule {
     @Override
     protected void configure() {
     	install(new MenuModule());
         install(new HomeModule());
+        install(new ToolsModule());
         install(new LoginModule());
         install(new AuthModule());
         install(new SecurityModule());
