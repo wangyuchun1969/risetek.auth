@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
@@ -60,7 +61,7 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if(event.getCharCode() == '\r') {
+				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
 					loginSubmit.click();
 				} else
 					reset();
@@ -96,18 +97,20 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 	private Panel createPasswordPanel() {
 		FlowPanel flowpanel = new FlowPanel();
 		Image img = new Image(AuthBundle.resources.password_png());
+		img.setStyleName(style.box_icon_img());
 		
 		flowpanel.setStyleName(style.box_outer());
 		flowpanel.addStyleName(style.box_outer_border());
 
-		SimplePanel icon = new SimplePanel();
-		icon.setStyleName(style.box_icon());
-		img.setStyleName(style.box_icon_img());
-		icon.add(img);
-		flowpanel.add(icon);
+		SimplePanel iconPanel = new SimplePanel();
+		iconPanel.setStyleName(style.box_icon());
+		iconPanel.add(img);
+		flowpanel.add(iconPanel);
 		SimplePanel inputPanel = new SimplePanel();
 		flowpanel.add(inputPanel);
 		inputPanel.setStyleName(style.box_input());
+		password_box.setStyleName(style.box_input_area());
+		password_box.getElement().setPropertyString("placeholder", "请输入密码");
 		inputPanel.add(password_box);
 
 		flowpanel.add(password_tips);
@@ -115,37 +118,24 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 		password_tips.getElement().setInnerText("密码不能为空");
 		password_tips.getElement().getStyle().setDisplay(Display.NONE);
 
-		password_box.addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if(event.getCharCode() == '\r') {
-					loginSubmit.click();
-				} else
-					reset();
-			}
-		});
-		password_box.addBlurHandler(new BlurHandler() {
-			@Override
-			public void onBlur(BlurEvent event) {
-				flowpanel.removeStyleName(style.box_outer_border_highlight());
-				flowpanel.addStyleName(style.box_outer_border());
-			}
-		});
-
-		password_box.addFocusHandler(new FocusHandler() {
-			@Override
-			public void onFocus(FocusEvent event) {
-				flowpanel.removeStyleName(style.box_outer_border());
-				flowpanel.addStyleName(style.box_outer_border_highlight());
+		password_box.addKeyPressHandler(event->{
+			if(event.getCharCode() == KeyCodes.KEY_ENTER)
+				loginSubmit.click();
+			else
 				reset();
-			}
 		});
-		
-		
-		password_box.setStyleName(style.box_input_area());
-		password_box.getElement().setPropertyString("placeholder", "请输入密码");
-		
+
+		password_box.addBlurHandler(event->{
+			flowpanel.removeStyleName(style.box_outer_border_highlight());
+			flowpanel.addStyleName(style.box_outer_border());
+		});
+
+		password_box.addFocusHandler(event->{
+			flowpanel.removeStyleName(style.box_outer_border());
+			flowpanel.addStyleName(style.box_outer_border_highlight());
+			reset();
+		});
+
 		return flowpanel;
 	}
 	
@@ -231,5 +221,11 @@ class AuthView extends ViewWithUiHandlers<MyUiHandlers> implements AuthPresenter
 		titlePanel.getElement().setInnerHTML(div.getString());
 		*/
         username_box.setFocus(true);
+	}
+
+
+	@Override
+	public void setStatus(String status) {
+		loginSubmit.setText(status);
 	}
 }

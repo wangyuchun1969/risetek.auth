@@ -35,14 +35,15 @@ public class OpenAuthActionHandler implements ActionHandler<OpenAuthAction, GetR
 			// validation
 			OAuthIssuerImpl oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 			String token = oauthIssuerImpl.authorizationCode();
-			System.out.println("callback: " + action.redirect_uri);
-			System.out.println("token: " + token);
+			System.out.println("callback: " + action.redirect_uri + " token: " + token);
 
 			OpenAuthInfo info = new OpenAuthInfo();
 			info.setCallback_url(action.redirect_uri);
 			info.setToken(token);
 			info.setClient_id(action.client_id);
 			info.setUsername(username);
+
+			// cache information for callback
 			userManagement.setInfoByToken(token, info);
 			return new GetResult<OpenAuthInfo>(info);
 			// if something goes wrong

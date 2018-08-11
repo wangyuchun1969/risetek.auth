@@ -1,7 +1,6 @@
 package com.risetek.auth.client.application.auth;
 
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -25,6 +24,7 @@ public class AuthPresenter extends Presenter<AuthPresenter.MyView, AuthPresenter
 	public interface MyView extends View, HasUiHandlers<MyUiHandlers> {
 		public void setClientID(String clientId);
 		public void reset();
+		public void setStatus(String status);
 	}
 
 	@ProxyStandard
@@ -50,26 +50,17 @@ public class AuthPresenter extends Presenter<AuthPresenter.MyView, AuthPresenter
 
 	@Override
 	public void Login(String username, String password) {
-		
-		
-		/*
-		String url = GWT.getHostPageBaseURL()+"oauth/authorize?client_id=" + client_id + "&response_type=code" +"&redirect_uri=" + callback_uri;
-		url += "&username=" + username + "&passwd=" + password;
-		Location.replace(URL.encode(url));
-		*/
-		
 		OpenAuthAction action = new OpenAuthAction(client_id, username, password, callback_uri, "code");
 		dispatcher.execute(action, new AsyncCallback<GetResult<OpenAuthInfo>>() {
 			@Override
 			public void onFailure(Throwable caught) {
-//				getView().setStatus("用户名或密码错误");
-				Window.alert("用户名或密码错误" + caught);
+				getView().setStatus("鉴权服务错误");
 			}
 
 			@Override
 			public void onSuccess(GetResult<OpenAuthInfo> result) {
 				if(null == result.getResults()) {
-					Window.alert("用户名或密码错误");
+					getView().setStatus("用户名或密码错误");
 					return;
 				}
 				Location.replace(URL.encode(result.getResults().getCallback_url()+"?code="+result.getResults().getToken()));

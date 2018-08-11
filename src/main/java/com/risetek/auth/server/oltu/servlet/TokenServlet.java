@@ -34,18 +34,15 @@ public class TokenServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
-
 		try {
 			OAuthTokenRequest oauthRequest = new OAuthTokenRequest(request);
-
 			String authzCode = oauthRequest.getCode();
-			// some code
+
+			OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
 			String accessToken = oauthIssuerImpl.accessToken();
 			String refreshToken = oauthIssuerImpl.refreshToken();
 
-			System.out.println("code is:" + authzCode);
+			System.out.println("TokenServlet service for:" + authzCode);
 			
 			OpenAuthInfo info = userManagement.getInfoByToken(authzCode);
 			if(null == info)
@@ -71,10 +68,9 @@ public class TokenServlet extends HttpServlet {
 			pw.close();
 			// if something goes wrong
 		} catch (OAuthProblemException | OAuthSystemException ex) {
-			OAuthProblemException pro = OAuthProblemException.error("somethign");
-			OAuthResponse r;
+			OAuthProblemException pro = OAuthProblemException.error(ex.toString());
 			try {
-				r = OAuthResponse.errorResponse(401).error(pro).buildJSONMessage();
+				OAuthResponse r = OAuthResponse.errorResponse(HttpServletResponse.SC_UNAUTHORIZED).error(pro).buildJSONMessage();
 				response.setStatus(r.getResponseStatus());
 
 				PrintWriter pw = response.getWriter();
@@ -82,12 +78,10 @@ public class TokenServlet extends HttpServlet {
 				pw.flush();
 				pw.close();
 
-				response.sendError(401);
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			} catch (OAuthSystemException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	}
 
