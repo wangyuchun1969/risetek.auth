@@ -195,14 +195,14 @@ public class DbManagement {
 
 	public List<UserResourceEntity> getUserFullResource() throws SQLException {
 		List<UserResourceEntity> resources = new Vector<UserResourceEntity>();
-		String sql = "SELECT id, securityId, application, key, value FROM resource;";
-		//System.out.println("DEBUG:" + sql);
+		String sql = "SELECT R.id, S.name AS name, R.application, R.key, R.value FROM resource R, security S WHERE R.securityId=S.id;";
+		// System.out.println("DEBUG:" + sql);
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			UserResourceEntity resource = new UserResourceEntity();
 			resource.setId(rs.getInt("id"));
-			resource.setUsername("securityId");
+			resource.setUsername(rs.getString("name"));
 			resource.setApplication(rs.getString("application"));
 			resource.setKey(rs.getString("key"));
 			resource.setValue(rs.getString("value"));
