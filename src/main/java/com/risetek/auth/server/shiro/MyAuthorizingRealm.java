@@ -2,7 +2,6 @@ package com.risetek.auth.server.shiro;
 
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -34,12 +33,10 @@ public class MyAuthorizingRealm extends AuthorizingRealm {
 		//System.out.println("In EgAuthorizingRealm.doGetAuthenticationInfo for: " + upToken.getUsername() + "/" + new String(upToken.getPassword()) + " - remember=" + upToken.isRememberMe());
 
 		// TODO: 管理授权服务，是本服务的管理授权
-		if(userManagement.isValid(upToken.getUsername(), upToken.getPassword())) {
-			SecurityUtils.getSubject().getSession().setAttribute("user", userManagement.getUserInfomation(upToken.getUsername()));
-			return new SimpleAuthenticationInfo(upToken.getUsername(), upToken.getPassword(), getName());
-		}
-		
-		return null;
+		if(!userManagement.isValid(upToken.getUsername(), upToken.getPassword()))
+			return null;
+
+		return new SimpleAuthenticationInfo(upToken.getUsername(), upToken.getPassword(), getName());
 	}
 
 	@Override

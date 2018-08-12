@@ -35,75 +35,7 @@ public class UserResourceServlet extends HttpServlet {
 
 	@Inject
 	private UserManagement userManagement;
-/*	
-	protected void doGetV1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.QUERY);
-			String accessToken = oauthRequest.getAccessToken();
-			OpenAuthInfo info = userManagement.getInfoByAccessToken(accessToken);
-			if(null == info)
-				throw OAuthProblemException.error("invalid client token");
-				
-			String username = info.getUsername(); // userManagement.getUsernameByAccessToken(accessToken);
-			JWT.Builder builder = new JWT.Builder();
-			builder.setHeaderAlgorithm("RS256");
-			builder.setHeaderType("JWT");
-			builder.setHeaderContentType("JWT");
-			builder.setClaimsSetIssuer("accounts.yun74.com");
-			builder.setClaimsSetJwdId("UUID");
 
-			builder.setClaimsSetIssuedAt(new Date().getTime());
-			builder.setClaimsSetExpirationTime(new Date().getTime() + 1000 * 60 * 60 * 24 * 5);
-
-			builder.setClaimsSetSubject(username);
-
-			List<String> roles = userManagement.getRoles(username);
-			if(roles != null) {
-				StringBuffer sb = new StringBuffer();
-				for(String role:roles)
-					sb.append(role).append(":");
-				
-				builder.setClaimsSetCustomField("roles", sb.toString());
-			}
-
-			List<Integer> teams = userManagement.getTeams(username);
-			if(roles != null) {
-				StringBuffer sb = new StringBuffer();
-				for(Integer team:teams)
-					sb.append(team.toString()).append(":");
-				
-				builder.setClaimsSetCustomField("teams", sb.toString());
-			}
-			
-			builder.setSignature(info.getClient_id());
-			
-			JWTWriter writer = new JWTWriter();
-			String jwts = writer.write(builder.build());
-			response.setStatus(HttpServletResponse.SC_OK);
-
-			PrintWriter pw = response.getWriter();
-			pw.print(jwts);
-			pw.flush();
-			pw.close();
-		} catch (OAuthSystemException | OAuthProblemException e) {
-			e.printStackTrace();
-
-			// build error response
-			try {
-				OAuthResponse oauthResponse = OAuthRSResponse.errorResponse(HttpServletResponse.SC_UNAUTHORIZED)
-						.setRealm("account ristek").buildHeaderMessage();
-				response.addHeader(OAuth.HeaderType.WWW_AUTHENTICATE, oauthResponse.getHeader(OAuth.HeaderType.WWW_AUTHENTICATE));
-			} catch (OAuthSystemException e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
-*/
-
-	/*
-	 * TODO:
-	 * 需要获得用户名和应用ID!
-	 */
 	@Inject
 	private DbManagement dbManagement;
 	
@@ -115,7 +47,7 @@ public class UserResourceServlet extends HttpServlet {
 			if(null == info)
 				throw OAuthProblemException.error("invalid client token");
 				
-			String username = info.getUsername(); // userManagement.getUsernameByAccessToken(accessToken);
+			String username = info.getUsername();
 				
 			JWT.Builder builder = new JWT.Builder();
 			builder.setHeaderAlgorithm("RS256");
@@ -135,8 +67,7 @@ public class UserResourceServlet extends HttpServlet {
 					builder.setClaimsSetCustomField(entity.getKey(), entity.getValue());
 				
 			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new IOException("database failed: " + e.getMessage());
+				throw new OAuthSystemException("database failed: " + e.getMessage());
 			}
 			
 			builder.setSignature(info.getClient_id());

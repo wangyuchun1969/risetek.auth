@@ -1,7 +1,5 @@
 package com.risetek.auth.client.security;
 
-import java.util.Map.Entry;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -48,14 +46,12 @@ public class CurrentUser implements AuthorityChangedHandler {
 			@Override
 			public void onSuccess(GetResult<AuthorityInfo> result) {
 				// Here we get user information from server.
-				GWT.log("we get user information");
+				GWT.log("by forceSync, we get user information");
 				setAuthorityInfo(result.getResults());
 
 				// Goto Place default
-//				if(!currentAuthorityInfo.isLogin())
+				if(!currentAuthorityInfo.isLogin())
 					placeManager.revealDefaultPlace();
-				
-//				placeManager.revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.HOME).build());
 			}});
     }
 
@@ -65,10 +61,10 @@ public class CurrentUser implements AuthorityChangedHandler {
 		
 		InformationState = InfoStatus.SYNCED;
 		currentAuthorityInfo = authorityInfo;
-
+/*
 		for( Entry<String, Boolean>  e : currentAuthorityInfo.getRoles().entrySet() )
 			GWT.log("Current have: " + e.getKey() + " " + (e.getValue() ? "powered" : "forribden"));
-		
+*/
 		eventBus.fireEvent(new UserStatusChangeEvent());
 	}
 
