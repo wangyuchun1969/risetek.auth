@@ -24,8 +24,10 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	private final FlowPanel buttonPanel = new FlowPanel();
 	private final Button close_button = new Button("放弃");
 	private final Button update_button = new Button("确认");
-	
-	
+	//--------by chenzhen------------
+	private final TextBox userBox = new TextBox();
+	private final TextBox applicationBox = new TextBox();
+	//--------------------
 	private final TextBox keyBox = new TextBox();
 	private final TextBox valueBox = new TextBox();
 
@@ -39,7 +41,10 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		pop.add(docker);
 
 		docker.setWidth("400px");
-		
+		//-------by chenzhen-------------
+		backgroundPanel.add(addItem(new Label("用户名"), userBox));
+		backgroundPanel.add(addItem(new Label("应用名"), applicationBox));
+		//-------------------------------
 		backgroundPanel.add(addItem(new Label("Key"), keyBox));
 		backgroundPanel.add(addItem(new Label("Value"), valueBox));
 		docker.add(backgroundPanel);
@@ -53,6 +58,10 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		buttonPanel.add(space);
 		
 		update_button.addClickHandler(event->{
+			//---------------------------------
+			localEntity.setUsername(userBox.getValue());
+			localEntity.setApplication(applicationBox.getValue());
+			//---------------------------------
 			localEntity.setKey(keyBox.getValue());
 			localEntity.setValue(valueBox.getValue());
 			getUiHandlers().onSave(localEntity);
@@ -76,6 +85,10 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	private UserResourceEntity localEntity;
 	public void showEditor(UserResourceEntity entity) {
 		localEntity = entity;
+		//------------------------
+		userBox.setText(entity.getUsername());
+		applicationBox.setText(entity.getApplication());
+		//--------------------------
 		keyBox.setText(entity.getKey());
 		valueBox.setText(entity.getValue());
 	}

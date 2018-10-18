@@ -127,12 +127,14 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 	public void addResource() {
 		UserResourceEntity entity = new UserResourceEntity();
 		entity.setId(-1);
+		/*
 		int appid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("app", "-1"));
 		int keyid = Integer.parseInt(placeManager.getCurrentPlaceRequest().getParameter("key", "-1"));
 		if(appid == -1 || keyid == -1) {
 			Window.alert("something wrong!");
 			return;
 		}
+		*/
 		// TODO: how to get application and key?
 		//entity.setAppId(appid);
 		//entity.setSecurityId(keyid);
