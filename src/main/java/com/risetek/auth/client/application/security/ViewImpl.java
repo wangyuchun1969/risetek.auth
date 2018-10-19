@@ -19,6 +19,7 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
@@ -77,7 +78,10 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Securi
 					return;
 				String type = event.getType();
 				if ("click".equals(type)) {
-					getUiHandlers().deleteUser(object);
+					boolean bool = Window.confirm("您确认删除此项吗？"); 
+					if(bool) {
+						getUiHandlers().deleteUser(object);
+					}
 				}
 				else
 					super.onBrowserEvent(context, elem, object, event);

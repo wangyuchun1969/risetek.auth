@@ -176,7 +176,7 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 				}
 			}
 		});
-			}
+	}
 
 	@Override
 	public void editResources(UserResourceEntity entity) {

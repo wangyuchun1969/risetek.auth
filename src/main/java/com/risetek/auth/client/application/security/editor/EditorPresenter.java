@@ -104,8 +104,39 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 
 	@Override
 	public void onDelete(UserSecurityEntity entity) {
-		// TODO Auto-generated method stub
 		
+		DatabaseSecurityMaintanceAction action = new DatabaseSecurityMaintanceAction(entity, "delete");
+		
+		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
+			@Override
+			public void onSuccess(GetNoResult result) {
+				// Update parent list.
+				getEventBus().fireEvent(new DataChangedEvent());
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// Convenient way to find out which exception was thrown.
+				try {
+					throw caught;
+				} catch (StatusCodeException e) {
+					// Response.SC_MOVED_TEMPORARILY
+					getEventBus().fireEvent(new AuthorityChangedEvent());
+				} catch (IncompatibleRemoteServiceException e) {
+					Window.alert("This client is not compatible with the server;\r\n Cleanup and refresh the browser.");
+				} catch (InvocationException e) {
+					// the call didn't complete cleanly
+					Window.alert("2" + e.toString());
+				} catch (RuntimeException e) {
+					Window.alert("RuntimeException:" + e);
+				} catch (Exception e) {
+					Window.alert("Exception:" + e);
+				} catch (Throwable e) {
+					// last resort -- a very unexpected exception
+					Window.alert("Throwable:" + e);
+				}
+			}
+		});
 	}
 
 	@Override

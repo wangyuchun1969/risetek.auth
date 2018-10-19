@@ -42,7 +42,7 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 
 		docker.setWidth("400px");
 		//-------by chenzhen-------------
-		backgroundPanel.add(addItem(new Label("用户名"), userBox));
+		backgroundPanel.add(addItem(new Label("使用者"), userBox));
 		backgroundPanel.add(addItem(new Label("应用名"), applicationBox));
 		//-------------------------------
 		backgroundPanel.add(addItem(new Label("Key"), keyBox));

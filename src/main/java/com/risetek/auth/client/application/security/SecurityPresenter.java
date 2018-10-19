@@ -144,6 +144,7 @@ public class SecurityPresenter extends Presenter<SecurityPresenter.MyView, Secur
 	@Override
 	public void deleteUser(UserSecurityEntity entity) {
 		// TODO: confirm!!!
+		editor.onDelete(entity);
 	}
 
 	@Override
