@@ -1,6 +1,7 @@
 package com.risetek.auth.client.application;
 
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
+import com.risetek.auth.client.application.app.AppModule;
 import com.risetek.auth.client.application.auth.AuthModule;
 import com.risetek.auth.client.application.home.HomeModule;
 import com.risetek.auth.client.application.login.LoginModule;
@@ -21,7 +22,8 @@ public class ApplicationModule extends AbstractPresenterModule {
         install(new SecurityModule());
         install(new SecurityEditorModule());
         install(new ResourcesModule());
-
+        install(new AppModule());
+       
         bindPresenter(ApplicationPresenter.class,
         		ApplicationPresenter.MyView.class,
         		ApplicationView.class,

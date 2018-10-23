@@ -9,4 +9,5 @@ public class NameTokens {
     public static final String security = "!security";
     public static final String resource = "!resource";
     public static final String tools = "!tools";
+	public static final String app = "!app";
 }

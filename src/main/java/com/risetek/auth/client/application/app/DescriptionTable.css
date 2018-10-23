@@ -1,0 +1,52 @@
+/*
+.cellTableHeader {
+  text-align: center;
+}
+
+.cellTableCell {
+	border:solid #8abeef;
+	border-width:1px 1px 0px 0px;
+	padding: 0px 4px 0px 4px;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis; 
+}
+
+.cellTableLastColumn {
+	border-width:1px 0px 0px 0px;
+}
+
+.cellTableHeader {
+  border-bottom: 1px solid #6f7277;
+}
+
+.cellTableEvenRow {
+  background: transparent;
+}
+
+.cellTableOddRow {
+  background: transparent;
+}
+
+.cellTableHoveredRow {
+  background: #CCCCFC !important;
+}
+
+.cellTableHeader {
+  padding: 3px 1px;
+}
+*/
+
+.onlineStatus {
+/*  background: #BFFFDF; */
+	color:		blue;
+}
+
+.offlineStatus {
+	color:		red;
+}
+
+.warningStatus {
+  background: #F09090;
+}
