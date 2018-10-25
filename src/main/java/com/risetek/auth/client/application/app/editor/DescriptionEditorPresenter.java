@@ -13,10 +13,10 @@ import com.gwtplatform.mvp.client.PopupView;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.proxy.RevealRootPopupContentEvent;
 import com.risetek.auth.client.application.app.DataChangedEvent;
+import com.risetek.auth.client.event.AppChangedEvent;
 import com.risetek.auth.shared.AppEntity;
 import com.risetek.auth.shared.AppMaintanceAction;
 import com.risetek.auth.shared.GetNoResult;
-
 
 
 public class DescriptionEditorPresenter extends PresenterWidget<DescriptionEditorPresenter.MyView>
@@ -47,6 +47,7 @@ public class DescriptionEditorPresenter extends PresenterWidget<DescriptionEdito
 			@Override
 			public void onSuccess(GetNoResult result) {
 				getEventBus().fireEvent(new DataChangedEvent());
+				getEventBus().fireEvent(new AppChangedEvent());
 				getView().hide();
 			}
 
@@ -88,6 +89,7 @@ public class DescriptionEditorPresenter extends PresenterWidget<DescriptionEdito
 			@Override
 			public void onSuccess(GetNoResult result) {
 				getEventBus().fireEvent(new DataChangedEvent());
+				getEventBus().fireEvent(new AppChangedEvent());
 				getView().hide();
 			}
 

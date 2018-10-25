@@ -1,17 +1,24 @@
 package com.risetek.auth.client.application.resources.editor;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
+import com.risetek.auth.client.application.ApplicationInfoRecord;
+import com.risetek.auth.shared.AppEntity;
 import com.risetek.auth.shared.UserResourceEntity;
+import com.risetek.auth.shared.UserSecurityEntity;
 
 class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements EditorPresenter.MyView {
 	private final StyleBundle.Style style = StyleBundle.resources.style();
@@ -25,12 +32,13 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	private final Button close_button = new Button("放弃");
 	private final Button update_button = new Button("确认");
 	//--------by chenzhen------------
-	private final TextBox userBox = new TextBox();
-	private final TextBox applicationBox = new TextBox();
+	private final ListBox combobox = new ListBox();
+	private final MultiWordSuggestOracle oracle = new MultiWordSuggestOracle(); 
+	private final SuggestBox suggestUsrBox = new SuggestBox(oracle);
 	//--------------------
 	private final TextBox keyBox = new TextBox();
 	private final TextBox valueBox = new TextBox();
-
+	
 	@Inject
 	public PageView(EventBus eventBus) {
 		super(eventBus);
@@ -41,9 +49,13 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		pop.add(docker);
 
 		docker.setWidth("400px");
-		//-------by chenzhen-------------
-		backgroundPanel.add(addItem(new Label("使用者"), userBox));
-		backgroundPanel.add(addItem(new Label("应用名"), applicationBox));
+		//-------by chenz-------------
+		suggestUsrBox.setSize("280px", "25px");
+		suggestUsrBox.getElement().getStyle().setFontSize(20, Unit.PX);
+		suggestUsrBox.getElement().getStyle().setColor("#42b4ff");
+		
+		backgroundPanel.add(addItem(new Label("使用者"), suggestUsrBox));
+		backgroundPanel.add(addItem(new Label("应用名"), combobox));
 		//-------------------------------
 		backgroundPanel.add(addItem(new Label("Key"), keyBox));
 		backgroundPanel.add(addItem(new Label("Value"), valueBox));
@@ -58,9 +70,9 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		buttonPanel.add(space);
 		
 		update_button.addClickHandler(event->{
-			//---------------------------------
-			localEntity.setUsername(userBox.getValue());
-			localEntity.setApplication(applicationBox.getValue());
+			//------------by chenz---------------------
+			localEntity.setUsername(suggestUsrBox.getText());
+			localEntity.setApplication(combobox.getSelectedItemText());
 			//---------------------------------
 			localEntity.setKey(keyBox.getValue());
 			localEntity.setValue(valueBox.getValue());
@@ -86,11 +98,19 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	public void showEditor(UserResourceEntity entity) {
 		localEntity = entity;
 		//------------------------
-		userBox.setText(entity.getUsername());
-		applicationBox.setText(entity.getApplication());
+		comboboxInit();
+		oracleInit();
+		suggestUsrBox.setText(entity.getUsername());
+		for(int i = 0;  i < combobox.getItemCount(); i++) {
+			if(combobox.getItemText(i).equals(entity.getApplication())) {
+				combobox.setSelectedIndex(i);
+				break;
+			}
+		}
 		//--------------------------
 		keyBox.setText(entity.getKey());
 		valueBox.setText(entity.getValue());
+		
 	}
 
 	private Widget addItem(Widget label, Widget box) {
@@ -103,5 +123,24 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		sp.add(box);
 		fPanel.add(sp);
 		return fPanel;
+	}
+	
+	private void comboboxInit() {
+		combobox.clear();
+		if(ApplicationInfoRecord.apps == null) {
+			 combobox.addItem("null");
+			 return;
+		}
+			 
+		for(AppEntity app : ApplicationInfoRecord.apps) {
+			combobox.addItem(app.getName());
+		 }
+	}
+	
+	private void oracleInit() {
+		oracle.clear();
+		for(UserSecurityEntity usr : ApplicationInfoRecord.users) {
+			oracle.add(usr.getUsername());
+		}
 	}
 }

@@ -21,6 +21,7 @@ public class AppQueryActionHandler implements ActionHandler<AppQueryAction, GetR
 	public GetResults<AppEntity> execute(AppQueryAction action, ExecutionContext context)
 			throws ActionException {
 		List<AppEntity> apps = null;
+		System.out.println("----AppQueryActionHandler：GetResults--------------");
 		try {
 			apps = dbManagement.getAllApplications(action.offset, action.limit);
 		} catch (SQLException e) {

@@ -37,7 +37,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 	private final SimplePanel pagerSlotPanel = new SimplePanel();
 	private final ListDataProvider<UserResourceEntity> dataprovider;
 	private final NoSelectionModel<UserResourceEntity> selectionModel = new NoSelectionModel<UserResourceEntity>();
-	private final Button addUserButton = new Button("添加用户");
+	private final Button addUserButton = new Button("添加权限");
 
 	private final CellTable<UserResourceEntity> celltable = new CellTable<UserResourceEntity>(10, TableResources.resources) {
 		@Override
@@ -197,7 +197,7 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 	
     @Inject
     ViewImpl(final EventBus eventBus, ListDataProvider<UserResourceEntity> dataProvider) {
-		dataprovider = dataProvider;
+    	dataprovider = dataProvider;
 		frameDocker.setSize("100%", "100%");
 		initWidget(frameDocker);
 		pagerSlotPanel.setSize("100%", "100%");
@@ -208,7 +208,6 @@ public class ViewImpl extends ViewWithUiHandlers<MyUiHandlers> implements Presen
 		initTable();
 		resizePanel.add(celltable);
 		frameDocker.add(resizePanel);
-		
 		addUserButton.addClickHandler(event->getUiHandlers().addResource());
     }
 

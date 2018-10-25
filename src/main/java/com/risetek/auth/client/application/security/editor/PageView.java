@@ -25,7 +25,7 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	private final FlowPanel buttonPanel = new FlowPanel();
 	private final Button close_button = new Button("放弃");
 	private final Button update_button = new Button("确认");
-	
+
 	
 	private final TextBox username = new TextBox();
 	private final TextBox eMailBox = new TextBox();
@@ -42,7 +42,6 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 		pop.add(docker);
 
 		docker.setWidth("400px");
-		
 		backgroundPanel.add(addItem(new Label("用户"), username));
 		backgroundPanel.add(addItem(new Label("密码"), passedBox));
 		backgroundPanel.add(addItem(new Label("电邮"), eMailBox));
