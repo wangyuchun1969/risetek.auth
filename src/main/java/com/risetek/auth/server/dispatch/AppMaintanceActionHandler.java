@@ -42,7 +42,7 @@ public class AppMaintanceActionHandler
 				throw new ActionException(e.toString());
 			}
 		}
-		return null;
+		return new GetNoResult();
 	}
 
 	@Override
