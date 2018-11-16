@@ -26,6 +26,8 @@ public class LogInOutActionHandler implements
 					token.getUsername(), token.getPassword().toCharArray(),
 					token.isRememberMe());
 			Subject subject = SecurityUtils.getSubject();
+			// try to put currentUser info into session
+			subject.getSession().setAttribute("currentUserName", token.getUsername());
 			try {
 				subject.login(upt);
 			} catch (AuthenticationException e) {
@@ -38,6 +40,7 @@ public class LogInOutActionHandler implements
 			// Logout
 			SecurityUtils.getSubject().logout();
 			SecurityUtils.getSubject().getSession().stop();
+			SecurityUtils.getSubject().getSession().setAttribute("currentUserName", null);
 		}
 		return new GetNoResult();
 	}

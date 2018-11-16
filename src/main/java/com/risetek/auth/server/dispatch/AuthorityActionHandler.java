@@ -32,7 +32,7 @@ public class AuthorityActionHandler implements ActionHandler<AuthorityAction, Ge
 		
 		AuthorityInfo info = new AuthorityInfo();
 		info.setLogin(subject.isAuthenticated());
-
+		info.setCurrentAccountName((String)subject.getSession().getAttribute("currentUserName"));
 		try {
 			boolean[] roleResult = subject.hasRoles(Arrays.asList(checkRoles));
 			for (int i = 0; i < checkRoles.length; i++)

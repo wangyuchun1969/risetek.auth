@@ -68,12 +68,10 @@ public class LoginPagePresenter extends
 			@Override
 			public void onFailure(Throwable caught) {
 				getView().setStatus("用户名或密码错误");
-				Util.currentAccountName = null;
 			}
 
 			@Override
 			public void onSuccess(GetNoResult result) {
-				Util.currentAccountName = username;
 				user.forceSync();
 			}
 		});

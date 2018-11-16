@@ -24,9 +24,16 @@ public class AuthorityInfo implements IsSerializable {
 	public void setLogin(boolean isLogin) {
 		this.isLogin = isLogin;
 	}
+	public void setCurrentAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+	public String getCurrentAccountName() {
+		return accountName;
+	}
 	private Map<String, Boolean> roles = new HashMap<String, Boolean>();
 	private String realm;
 	private boolean isLogin = false;
+	private String accountName;
 	
 	public boolean hasRole(String roleName) {
 		Boolean value = roles.get(roleName);

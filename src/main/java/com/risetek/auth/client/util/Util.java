@@ -7,5 +7,4 @@ import com.risetek.auth.shared.UserSecurityEntity;
 public class Util {
 	public static List<AppEntity> apps = null;
 	public static List<UserSecurityEntity> users = null;
-	public static String currentAccountName = null;
 }

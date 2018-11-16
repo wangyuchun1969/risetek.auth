@@ -22,8 +22,10 @@ import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.application.selfAccount.DataChangedEvent;
 import com.risetek.auth.client.application.selfAccount.editor.SelfAccountEditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
+import com.risetek.auth.client.security.CurrentUser;
 import com.risetek.auth.client.util.Util;
 import com.risetek.auth.shared.AccountEntity;
+import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.CurrentAccountQueryAction;
 import com.risetek.auth.shared.GetResults;
 
@@ -37,6 +39,9 @@ public class ManageSelfAccountPresenter extends Presenter<ManageSelfAccountPrese
 			void showCurrentAccount(List<AccountEntity> user);
 	    }
 	 
+	    @Inject
+	    private CurrentUser user;
+	   
 	    @ProxyStandard
 	    @NameToken(NameTokens.manageSelfAccount)
 	    public interface MyProxy extends ProxyPlace<ManageSelfAccountPresenter> {
@@ -68,15 +73,16 @@ public class ManageSelfAccountPresenter extends Presenter<ManageSelfAccountPrese
 			GWT.log("ManageSelfAccountPresenter onReset");
 	    	super.onReset();
 	    }
-		
+	    
 		@Override
 		public void update() {
-			if(null == Util.currentAccountName) {
+			AuthorityInfo info = user.getAuthorityInfo();
+			if(null == info.getCurrentAccountName()) {
 				Window.alert("current account's name is invalid");
 				return;
 			}
-			
-			CurrentAccountQueryAction action = new CurrentAccountQueryAction(Util.currentAccountName);
+			GWT.log("update: current accountName is "+ info.getCurrentAccountName());
+			CurrentAccountQueryAction action = new CurrentAccountQueryAction(info.getCurrentAccountName());
 			GWT.log("ListAccounts: execute AccountQueryAction");
 			dispatcher.execute(action, new AsyncCallback<GetResults<AccountEntity>>() {
 				@Override
