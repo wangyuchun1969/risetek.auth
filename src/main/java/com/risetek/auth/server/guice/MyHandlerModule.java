@@ -6,6 +6,8 @@ import com.risetek.auth.server.dispatch.AccountQueryActionHandler;
 import com.risetek.auth.server.dispatch.AppMaintanceActionHandler;
 import com.risetek.auth.server.dispatch.AppQueryActionHandler;
 import com.risetek.auth.server.dispatch.AuthorityActionHandler;
+import com.risetek.auth.server.dispatch.CurrentAccountChangePasswdActionHandler;
+import com.risetek.auth.server.dispatch.CurrentAccountQueryActionHandler;
 import com.risetek.auth.server.dispatch.DatabaseResourceMaintanceActionHandler;
 import com.risetek.auth.server.dispatch.DatabaseResourcesQueryActionHandler;
 import com.risetek.auth.server.dispatch.DatabaseSecurityMaintanceActionHandler;
@@ -18,6 +20,8 @@ import com.risetek.auth.shared.AccountQueryAction;
 import com.risetek.auth.shared.AppMaintanceAction;
 import com.risetek.auth.shared.AppQueryAction;
 import com.risetek.auth.shared.AuthorityAction;
+import com.risetek.auth.shared.CurrentAccountChangePasswdAction;
+import com.risetek.auth.shared.CurrentAccountQueryAction;
 import com.risetek.auth.shared.DatabaseResourceMaintanceAction;
 import com.risetek.auth.shared.DatabaseResourcesQueryAction;
 import com.risetek.auth.shared.DatabaseSecurityMaintanceAction;
@@ -41,5 +45,7 @@ public class MyHandlerModule extends HandlerModule {
 		bindHandler(AppQueryAction.class, AppQueryActionHandler.class);
 		bindHandler(AccountMaintanceAction.class, AccountMaintanceActionHandler.class);
 		bindHandler(AccountQueryAction.class, AccountQueryActionHandler.class);
+		bindHandler(CurrentAccountQueryAction.class, CurrentAccountQueryActionHandler.class);
+		bindHandler(CurrentAccountChangePasswdAction.class, CurrentAccountChangePasswdActionHandler.class);
 	}
 }

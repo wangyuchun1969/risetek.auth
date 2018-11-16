@@ -1,0 +1,82 @@
+@external gwt-Button button table gwt-TextBox;
+
+.Editor {
+	background-color:			#F2F2F2;
+	border-radius:				2px;
+	border:						1px #F2F2F2 solid;
+	margin:						0px;
+	display:					inline-block;
+	z-index:					10100;
+}
+
+.ItemOuter {
+	background-color:			#F2F2F2;
+	margin:						5px 0px 0px 0px;
+}
+
+.EditorLable {
+	font-size: 					20px;
+	text-align:					right;
+	display:					inline-block;
+	width:						120px;
+	padding:					0px;
+	margin:						0px 2px;
+}
+
+.EditorTitleLabel {
+	color:						#3399DD;
+	font-size: 					22px;
+	text-align:					center;	
+	display:					inline-block;
+	width:						150px;
+	padding:					2px 2px;
+	margin:						2px 5px 2px 2px;
+}
+
+.editorBoxs {
+	display:					inline-block;
+	width:						250px;
+	padding:					10px;
+}
+
+.editorBoxs .gwt-TextBox {
+	border:				solid #3399DD;
+	border-width:		0px 0px 1px 0px;
+	
+	outline:			none;
+	font-size: 			20px;
+	color: 				#42b4ff;
+	background-color:	#f2f2f2;
+	width:				100%;
+}
+
+.editorButtonPanel {
+	width:						100%;
+	height:						38px;
+	display:					flex;
+	margin:						5px 0px 0px 0px;
+}
+
+.editorButton {
+	border:				1px solid #3399DD;
+	border-radius:		2px;
+	color:				#FFFFFF;
+	background:			#42b4ff;
+	font-size:			20px;
+	font-weight:		bold;
+	text-shadow:		0 -1px 0 #3399DD;
+	margin:				0px 2px;
+	padding:			0px;
+	min-width:			100px;
+	cursor:				pointer;
+}
+
+.editorButton:disabled {
+	background:			#828282;
+	cursor:				default;
+}
+
+.editorSpace {
+	flex-grow:			1;
+	flex-shrink:		1;
+}

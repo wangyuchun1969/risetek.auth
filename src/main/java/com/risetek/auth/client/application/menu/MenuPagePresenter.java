@@ -27,6 +27,7 @@ import com.risetek.auth.client.application.app.AddAppMenu;
 import com.risetek.auth.client.application.app.AppMenu;
 import com.risetek.auth.client.application.resources.ResourcesMenu;
 import com.risetek.auth.client.application.security.SecurityMenu;
+import com.risetek.auth.client.application.selfAccount.ManageSelfAccountMenu;
 import com.risetek.auth.client.security.CurrentUser;
 
 
@@ -78,6 +79,7 @@ public class MenuPagePresenter extends
     	instanceMenu(app.menus, new AddAppMenu());
     	instanceMenu(menus, new LoginMenu());
     	instanceMenu(menus, new ManageAccountMenu());
+    	instanceMenu(menus, new ManageSelfAccountMenu());
     }
 
 	@Inject

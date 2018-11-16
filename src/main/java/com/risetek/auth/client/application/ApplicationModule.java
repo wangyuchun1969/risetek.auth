@@ -10,6 +10,7 @@ import com.risetek.auth.client.application.menu.MenuModule;
 import com.risetek.auth.client.application.resources.ResourcesModule;
 import com.risetek.auth.client.application.security.SecurityModule;
 import com.risetek.auth.client.application.security.editor.SecurityEditorModule;
+import com.risetek.auth.client.application.selfAccount.ManageSelfAccountModule;
 import com.risetek.auth.client.application.tools.ToolsModule;
 
 public class ApplicationModule extends AbstractPresenterModule {
@@ -25,6 +26,7 @@ public class ApplicationModule extends AbstractPresenterModule {
         install(new ResourcesModule());
         install(new AppModule());
         install(new ManageAccountModule());
+        install(new ManageSelfAccountModule());
         
         bindPresenter(ApplicationPresenter.class,
         		ApplicationPresenter.MyView.class,
