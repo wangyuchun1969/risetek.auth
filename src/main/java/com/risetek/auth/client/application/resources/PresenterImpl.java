@@ -19,12 +19,12 @@ import com.gwtplatform.mvp.client.annotations.UseGatekeeper;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.risetek.auth.client.AuthorityChangedEvent;
-import com.risetek.auth.client.application.ApplicationInfoRecord;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.application.resources.editor.EditorPresenter;
 import com.risetek.auth.client.event.AppChangedEvent;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.LoggedInGatekeeper;
+import com.risetek.auth.client.util.Util;
 import com.risetek.auth.shared.AppEntity;
 import com.risetek.auth.shared.AppQueryAction;
 import com.risetek.auth.shared.DatabaseResourceMaintanceAction;
@@ -197,12 +197,12 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 		dispatcher.execute(action, new AsyncCallback<GetResults<AppEntity>>() {
 			@Override
 			public void onSuccess(GetResults<AppEntity> result) {
-				ApplicationInfoRecord.apps = result.getResults();
+				Util.apps = result.getResults();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				ApplicationInfoRecord.apps = null;
+				Util.apps = null;
 				// Convenient way to find out which exception was thrown.
 				try {
 					throw caught;
@@ -232,12 +232,12 @@ public class PresenterImpl extends Presenter<PresenterImpl.MyView, PresenterImpl
 		dispatcher.execute(action, new AsyncCallback<GetResults<UserSecurityEntity>>() {
 			@Override
 			public void onSuccess(GetResults<UserSecurityEntity> result) {
-				ApplicationInfoRecord.users = result.getResults();
+				Util.users = result.getResults();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				ApplicationInfoRecord.users = null;
+				Util.users = null;
 				// Convenient way to find out which exception was thrown.
 				try {
 					throw caught;

@@ -18,7 +18,6 @@ import com.gwtplatform.mvp.client.annotations.ProxyEvent;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
-import com.risetek.auth.client.application.ApplicationInfoRecord;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.application.app.editor.DescriptionEditorPresenter;
 import com.risetek.auth.client.place.NameTokens;

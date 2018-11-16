@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.PopupViewWithUiHandlers;
-import com.risetek.auth.client.application.ApplicationInfoRecord;
+import com.risetek.auth.client.util.Util;
 import com.risetek.auth.shared.AppEntity;
 import com.risetek.auth.shared.UserResourceEntity;
 import com.risetek.auth.shared.UserSecurityEntity;
@@ -127,19 +127,19 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 	
 	private void comboboxInit() {
 		combobox.clear();
-		if(ApplicationInfoRecord.apps == null) {
+		if(Util.apps == null) {
 			 combobox.addItem("null");
 			 return;
 		}
 			 
-		for(AppEntity app : ApplicationInfoRecord.apps) {
+		for(AppEntity app : Util.apps) {
 			combobox.addItem(app.getName());
 		 }
 	}
 	
 	private void oracleInit() {
 		oracle.clear();
-		for(UserSecurityEntity usr : ApplicationInfoRecord.users) {
+		for(UserSecurityEntity usr : Util.users) {
 			oracle.add(usr.getUsername());
 		}
 	}
