@@ -1,7 +1,5 @@
 package com.risetek.auth.server.shiro;
 
-import java.util.List;
-
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -50,10 +48,10 @@ public class MyAuthorizingRealm extends AuthorizingRealm {
 		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
 
 		String username = (String) pc.fromRealm(getName()).iterator().next();
-		List<String> roles = userManagement.getRoles(username);
-		for(String role:roles)
+		String roles = userManagement.getRoles(username);
+		String[] myRoles = roles.split(":");
+		for(String role:myRoles)
 			authorizationInfo.addRole(role);
-
 		return authorizationInfo;		
 	}
 }
