@@ -16,6 +16,7 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.risetek.auth.client.application.ApplicationPresenter;
 import com.risetek.auth.client.place.NameTokens;
 import com.risetek.auth.client.security.CurrentUser;
+import com.risetek.auth.client.util.Util;
 import com.risetek.auth.shared.AuthToken;
 import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetNoResult;
@@ -67,10 +68,12 @@ public class LoginPagePresenter extends
 			@Override
 			public void onFailure(Throwable caught) {
 				getView().setStatus("用户名或密码错误");
+				Util.currentAccountName = null;
 			}
 
 			@Override
 			public void onSuccess(GetNoResult result) {
+				Util.currentAccountName = username;
 				user.forceSync();
 			}
 		});
