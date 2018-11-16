@@ -1,6 +1,8 @@
 package com.risetek.auth.server.guice;
 
 import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
+import com.risetek.auth.server.dispatch.AccountMaintanceActionHandler;
+import com.risetek.auth.server.dispatch.AccountQueryActionHandler;
 import com.risetek.auth.server.dispatch.AppMaintanceActionHandler;
 import com.risetek.auth.server.dispatch.AppQueryActionHandler;
 import com.risetek.auth.server.dispatch.AuthorityActionHandler;
@@ -11,6 +13,8 @@ import com.risetek.auth.server.dispatch.DatabaseSecurityQueryActionHandler;
 import com.risetek.auth.server.dispatch.DbInitActionHandler;
 import com.risetek.auth.server.dispatch.LogInOutActionHandler;
 import com.risetek.auth.server.dispatch.OpenAuthActionHandler;
+import com.risetek.auth.shared.AccountMaintanceAction;
+import com.risetek.auth.shared.AccountQueryAction;
 import com.risetek.auth.shared.AppMaintanceAction;
 import com.risetek.auth.shared.AppQueryAction;
 import com.risetek.auth.shared.AuthorityAction;
@@ -35,5 +39,7 @@ public class MyHandlerModule extends HandlerModule {
 		bindHandler(DatabaseSecurityQueryAction.class, DatabaseSecurityQueryActionHandler.class);
 		bindHandler(AppMaintanceAction.class, AppMaintanceActionHandler.class);
 		bindHandler(AppQueryAction.class, AppQueryActionHandler.class);
+		bindHandler(AccountMaintanceAction.class, AccountMaintanceActionHandler.class);
+		bindHandler(AccountQueryAction.class, AccountQueryActionHandler.class);
 	}
 }

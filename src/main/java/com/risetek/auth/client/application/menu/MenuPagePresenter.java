@@ -22,6 +22,7 @@ import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.risetek.auth.client.RevealDefaultLinkColumnHandler;
 import com.risetek.auth.client.UserStatusChangeEvent;
 import com.risetek.auth.client.application.ApplicationPresenter;
+import com.risetek.auth.client.application.account.ManageAccountMenu;
 import com.risetek.auth.client.application.app.AddAppMenu;
 import com.risetek.auth.client.application.app.AppMenu;
 import com.risetek.auth.client.application.resources.ResourcesMenu;
@@ -76,7 +77,7 @@ public class MenuPagePresenter extends
     	instanceMenu(app.menus, new AppMenu());
     	instanceMenu(app.menus, new AddAppMenu());
     	instanceMenu(menus, new LoginMenu());
-    	
+    	instanceMenu(menus, new ManageAccountMenu());
     }
 
 	@Inject
