@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.google.inject.Singleton;
+import com.risetek.auth.shared.AccountEntity;
 import com.risetek.auth.shared.AppEntity;
 import com.risetek.auth.shared.UserResourceEntity;
 import com.risetek.auth.shared.UserSecurityEntity;
@@ -40,6 +41,15 @@ public class DbManagement {
 			" id IDENTITY," +
 			" name VARCHAR(30) NOT NULL UNIQUE," +
 			" notes VARCHAR(600)," +
+			");";
+	
+	private final String createAccountTable = "CREATE TABLE IF NOT EXISTS account (" +
+			" id IDENTITY," + 
+			" name VARCHAR(40) NOT NULL UNIQUE," + 
+			" passwd VARCHAR(60) NOT NULL," + 
+			" roles VARCHAR(60) NOT NULL,"	+
+			" teams VARCHAR(60) NOT NULL,"	+
+			" notes VARCHAR(600)," + 
 			");";
 	private Connection connection;
 	public DbManagement() {
@@ -73,12 +83,16 @@ public class DbManagement {
 		System.out.println("!!!!!!!!!! ---------------- drop security table: " + result);
 		result = stmt.executeUpdate("DROP TABLE IF EXISTS application;");
 		System.out.println("!!!!!!!!!! ---------------- drop application table: " + result);
+		result = stmt.executeUpdate("DROP TABLE IF EXISTS account;");
+		System.out.println("!!!!!!!!!! ---------------- drop account table: " + result);
 		result = stmt.executeUpdate(createSecurityTable);
 		System.out.println("!!!!!!!!!! ---------------- create security table: " + result);
 		result = stmt.executeUpdate(createResourceTable);
 		System.out.println("!!!!!!!!!! ---------------- create resource table: " + result);
 		result = stmt.executeUpdate(createApplicationTable);
 		System.out.println("!!!!!!!!!! ---------------- create application table: " + result);
+		result = stmt.executeUpdate(createAccountTable);
+		System.out.println("!!!!!!!!!! ---------------- create account table: " + result);
 		stmt.close();
 		
 		test();
@@ -306,6 +320,85 @@ public class DbManagement {
 		stmt.execute(sql);
 		stmt.close();
 	}	
+	
+	public List<AccountEntity> getAllAccounts(int offset, int limit) throws SQLException {
+		List<AccountEntity> accounts = new Vector<AccountEntity>();
+		String sql = "SELECT id, name, passwd, roles, teams, notes FROM account" + " OFFSET " + offset + " LIMIT " + limit + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			AccountEntity account = new AccountEntity();
+			account.setId(rs.getInt("id"));
+			account.setName(rs.getString("name"));
+			account.setPassword(rs.getString("passwd"));
+			account.setRoles(rs.getString("roles"));
+			account.setTeams(rs.getString("teams"));
+			account.setNotes(rs.getString("notes"));
+			accounts.add(account);
+		}
+
+		stmt.close();
+		return accounts;
+	}
+
+	public List<AccountEntity> getAccount(String name) throws SQLException {
+		List<AccountEntity> accounts = new Vector<AccountEntity>();
+		String sql = "SELECT id, name, passwd, roles, teams, notes FROM account WHERE name = '" + name + "';";
+		System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			AccountEntity account = new AccountEntity();
+			account.setId(rs.getInt("id"));
+			account.setName(rs.getString("name"));
+			account.setPassword(rs.getString("passwd"));
+			account.setRoles(rs.getString("roles"));
+			account.setTeams(rs.getString("teams"));
+			account.setNotes(rs.getString("notes"));	
+			accounts.add(account);
+		}
+		stmt.close();
+		return accounts;
+	}
+	
+	public void updateAccount(AccountEntity account) throws SQLException {
+		String sql = "UPDATE account SET name = ?, passwd = ?, roles = ?, teams=?, notes = ? WHERE id=?;";
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setString(1, account.getName());
+		preparedStmt.setString(2, account.getPassword());
+		preparedStmt.setString(3, account.getRoles());
+		preparedStmt.setString(4, account.getTeams());
+		preparedStmt.setString(5, account.getNotes());
+		preparedStmt.setInt(6, account.getId());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
+	
+	public void addAccount(AccountEntity account) throws SQLException {
+		String sql = "INSERT INTO account (name, passwd, roles, teams, notes) VALUES(?,?,?,?,?);";
+		// create the java mysql update preparedstatement
+		PreparedStatement preparedStmt = connection.prepareStatement(sql);
+		preparedStmt.setString(1, account.getName());
+		preparedStmt.setString(2, account.getPassword());
+		preparedStmt.setString(3, account.getRoles());
+		preparedStmt.setString(4, account.getTeams());
+		preparedStmt.setString(5, account.getNotes());
+		// execute the java preparedstatement
+		preparedStmt.executeUpdate();
+		preparedStmt.close();
+	}
+
+	public void deleteAccount(AccountEntity account) throws SQLException {
+		String sql = "DELETE FROM account WHERE id=" + account.getId() + ";";
+		//System.out.println("DEBUG:" + sql);
+		Statement stmt = connection.createStatement();
+		stmt.execute(sql);
+		stmt.close();
+	}	
+	
 	//-------------------
 	private void test() throws SQLException {
 		users_init();
@@ -339,6 +432,16 @@ public class DbManagement {
 		app.setName(name);
 		app.setNotes(notes);
 		addApplication(app);
+	}
+	
+	private void add_one_account(String name, String passwd, String roles, String teams, String notes) throws SQLException {
+		AccountEntity account = new AccountEntity();
+		account.setName(name);
+		account.setPassword(passwd);
+		account.setRoles(roles);
+		account.setTeams(teams);
+		account.setNotes(notes);
+		addAccount(account);
 	}
 	private void users_init() throws SQLException {
 		add_one_user("wangyc@risetek.com", "gamelan", "wangyc@risetek.com", "wangyc@risetek.com");
@@ -374,7 +477,7 @@ public class DbManagement {
 		add_resource("wangp@ccs", "risetek-yun74-id", "roles", "admin:developer:maintenance:operator:visitor");
 		add_resource("wangp@ccs", "risetek-yun74-id", "teams", "-1");
 		add_one_app("risetek-yun74-id", "risetek yun74 service");
+		add_one_account("admin", "admin", "admin:developer:maintenance:operator:visitor", "-1", "the super account");
 		getUserResourceByName("wangyc@risetek.com", "wangyc@risetek.com");
 	}
-
 }
