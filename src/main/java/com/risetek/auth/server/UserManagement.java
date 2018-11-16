@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.risetek.auth.shared.AccountEntity;
 import com.risetek.auth.shared.OpenAuthInfo;
 import com.risetek.auth.shared.UserSecurityEntity;
 
@@ -25,46 +26,26 @@ public class UserManagement {
 	 * visitor
 	 * maintenance
 	 */
-	public class UserInformation {
-		String password;
-		public List<Integer> teams = new Vector<Integer>();
-		List<String> roles = new Vector<String>();
-	}
-
-	private Map<String, UserInformation> users = new HashMap<>();
 
 	public UserManagement() {
-		UserInformation wangyc = new UserInformation();
-		wangyc.password = "gamelan";
-		wangyc.roles.add("admin");
-		wangyc.roles.add("developer");
-		wangyc.roles.add("maintenance");
-		wangyc.roles.add("operator");
-		wangyc.roles.add("visitor");
-		wangyc.teams.add(new Integer(-1));
-		users.put("wangyc@risetek.com", wangyc);
-	}
-	
-	public UserInformation getUserInfomation(String username) {
-		UserInformation user = users.get(username);
-		return user;
 	}
 	
 	public boolean isValid(String username, char[] password) {
-		UserInformation user = users.get(username);
-		if(null == user || null == password || null == user.password)
+		if(null == username || null == password)
 			return false;
-		
-		if(Arrays.equals(password, user.password.toCharArray()))
-			return true;
-
+		try {
+			List<AccountEntity> list = dbManagement.getAccount(username);
+			if(list.size() > 0 && Arrays.equals(password, list.get(0).getPassword().toCharArray()))
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
 	public boolean isValid2(String username, char[] password) {
 		if(null == username || null == password)
 			return false;
-		
 		try {
 			List<UserSecurityEntity> list = dbManagement.getUserSecurity(username);
 			if(list.size() > 0 && Arrays.equals(password, list.get(0).getPasswd().toCharArray()))
@@ -72,21 +53,32 @@ public class UserManagement {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return false;
 	}
 	
-	public List<String> getRoles(String username) {
-		UserInformation user = users.get(username);
-		if(null != user)
-			return user.roles;
+	public String getRoles(String username) {
+		if(null == username)
+			return null;
+		try {
+			List<AccountEntity> list = dbManagement.getAccount(username);
+			if(list.size() > 0)
+				return list.get(0).getRoles();
+		} catch (SQLException e) {
+			e.printStackTrace();	
+		}
 		return null;
 	}
 	
-	public List<Integer> getTeams(String username) {
-		UserInformation user = users.get(username);
-		if(null != user)
-			return user.teams;
+	public String getTeams(String username) {
+		if(null == username)
+			return null;
+		try {
+			List<AccountEntity> list = dbManagement.getAccount(username);
+			if(list.size() > 0)
+				return list.get(0).getTeams();
+		} catch (SQLException e) {
+			e.printStackTrace();	
+		}
 		return null;
 	}
 
