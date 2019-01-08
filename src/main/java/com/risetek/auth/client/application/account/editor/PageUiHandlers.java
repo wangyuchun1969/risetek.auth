@@ -9,4 +9,5 @@ interface PageUiHandlers extends UiHandlers {
 	public void onSave(AccountEntity entity);
 	public void onDelete(AccountEntity entity);
 	public void onCancle();
+	public boolean accountIsLoginAccount(String account_name);
 }

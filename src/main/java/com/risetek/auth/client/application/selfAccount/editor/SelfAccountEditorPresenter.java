@@ -29,7 +29,7 @@ public class SelfAccountEditorPresenter extends PresenterWidget<SelfAccountEdito
 	private final DispatchAsync dispatcher;
 
 	public enum Field { PASSWD, NOTES}
-	
+	  
 	@Inject
 	public SelfAccountEditorPresenter(final EventBus eventBus, final MyView view, DispatchAsync dispatcher) {
 		super(eventBus, view);
@@ -137,5 +137,4 @@ public class SelfAccountEditorPresenter extends PresenterWidget<SelfAccountEdito
 			}
 		});
 	}
-	
 }

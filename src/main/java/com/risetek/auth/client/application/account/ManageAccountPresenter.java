@@ -23,8 +23,10 @@ import com.risetek.auth.client.application.account.DataChangedEvent;
 import com.risetek.auth.client.application.account.ManageAccountPresenter;
 import com.risetek.auth.client.application.account.editor.EditorPresenter;
 import com.risetek.auth.client.place.NameTokens;
+import com.risetek.auth.client.security.CurrentUser;
 import com.risetek.auth.shared.AccountEntity;
 import com.risetek.auth.shared.AccountQueryAction;
+import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetResults;
 
 
@@ -64,6 +66,9 @@ public class ManageAccountPresenter extends Presenter<ManageAccountPresenter.MyV
 		});
 	}
     
+	@Inject
+	private CurrentUser user;
+	
 	@Override
     protected void onReset() {
 		GWT.log("ManageAccountPresenter onReset");
@@ -119,6 +124,10 @@ public class ManageAccountPresenter extends Presenter<ManageAccountPresenter.MyV
 
 	@Override
 	public void editPassword(AccountEntity entity) {
+		if(!authorizationCheck(entity)) {
+			Window.alert("您无权进行此操作");
+			return;
+		}
 		editor.editor(entity, EditorPresenter.Field.PASSWD);
 	}
 
@@ -129,16 +138,28 @@ public class ManageAccountPresenter extends Presenter<ManageAccountPresenter.MyV
 
 	@Override
 	public void editTeams(AccountEntity entity) {
+		if(!authorizationCheck(entity)) {
+			Window.alert("您无权进行此操作");
+			return;
+		}
 		editor.editor(entity, EditorPresenter.Field.TEAMS);
 	}
 	
 	@Override
 	public void editRoles(AccountEntity entity) {
+		if(!authorizationCheck(entity)) {
+			Window.alert("您无权进行此操作");
+			return;
+		}
 		editor.editor(entity, EditorPresenter.Field.ROLES);
 	}
 	
 	@Override
 	public void editNotes(AccountEntity entity) {
+		if(!authorizationCheck(entity)) {
+			Window.alert("您无权进行此操作");
+			return;
+		}
 		editor.editor(entity, EditorPresenter.Field.NOTES);
 	}
 
@@ -151,7 +172,30 @@ public class ManageAccountPresenter extends Presenter<ManageAccountPresenter.MyV
 
 	@Override
 	public void deleteAccount(AccountEntity entity) {
-		// TODO: confirm!!!
+		if(entity.getRoles().indexOf("admin") != -1) {
+			Window.alert("操作失败：\"admin\"类型账户不能在此删除");
+			return;
+		}
 		editor.onDelete(entity);
+	}
+	
+	private boolean accountIsLoginAccount(AccountEntity account) {
+		AuthorityInfo info = user.getAuthorityInfo();
+		if(null == info.getCurrentAccountName()) {
+			Window.alert("current account's name is invalid");
+			return false;
+		}
+		if( info.getCurrentAccountName().equals(account.getName())) {
+			return true;
+		}
+		return false;
+	}
+	
+	// 理论上可以存在多个admin类型的管理账户，为保证这些admin账户不互相干扰
+	// 我们只允许一个admin账户修改其本身账户以及所有非admin账户
+	private boolean authorizationCheck(AccountEntity account) {
+		if( account.getRoles().indexOf("admin") == -1 || accountIsLoginAccount(account))
+			return true;
+		return false;
 	}
 }

@@ -175,6 +175,10 @@ class PageView extends PopupViewWithUiHandlers<PageUiHandlers> implements Editor
 			Window.alert("roles不能为空");
 			return false;
 		}
+		if( rolesBox.getText().indexOf("admin") != -1 && !getUiHandlers().accountIsLoginAccount(username.getText())) {
+			Window.alert("您不能添加/管理\"admin\"类型账户(登录账户除外)");
+			return false;
+		}
 		if( null == teamsBox.getText() || teamsBox.getText().equals(null) || teamsBox.getText().equals("")) {
 			Window.alert("teams不能为空");
 			return false;

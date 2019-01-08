@@ -13,8 +13,10 @@ import com.gwtplatform.mvp.client.PopupView;
 import com.gwtplatform.mvp.client.PresenterWidget;
 import com.gwtplatform.mvp.client.proxy.RevealRootPopupContentEvent;
 import com.risetek.auth.client.application.account.DataChangedEvent;
+import com.risetek.auth.client.security.CurrentUser;
 import com.risetek.auth.shared.AccountEntity;
 import com.risetek.auth.shared.AccountMaintanceAction;
+import com.risetek.auth.shared.AuthorityInfo;
 import com.risetek.auth.shared.GetNoResult;
 
 
@@ -38,7 +40,10 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 		this.dispatcher = dispatcher;
 		getView().setUiHandlers(this);
 	}
-
+	
+	@Inject
+	private CurrentUser user;
+	
 	public void editor(AccountEntity entity, Field field) {
 		switch(field) {
 		case ALL:
@@ -64,7 +69,7 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 	
 	@Override
 	public void onSave(AccountEntity entity) {
-	
+
 		AccountMaintanceAction action = new AccountMaintanceAction(entity, (entity.getId() < 0) ? "insert":"update");
 		
 		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
@@ -109,7 +114,7 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 
 	@Override
 	public void onDelete(AccountEntity entity) {
-		
+
 		AccountMaintanceAction action = new AccountMaintanceAction(entity, "delete");
 		
 		dispatcher.execute(action, new AsyncCallback<GetNoResult>() {
@@ -147,5 +152,21 @@ public class EditorPresenter extends PresenterWidget<EditorPresenter.MyView>
 	@Override
 	public void onCancle() {
 		getView().hide();
+	}
+	
+	// 理论上可以存在多个admin类型的管理账户，为保证这些admin账户不互相干扰
+	// 我们只允许一个admin账户修改其本身账户以及所有非admin账户
+	// 检查本操作账户是否为当前账户
+	@Override
+	public boolean accountIsLoginAccount(String account_name) {
+		AuthorityInfo info = user.getAuthorityInfo();
+		if(null == info.getCurrentAccountName()) {
+			Window.alert("current account's name is invalid");
+			return false;
+		}
+		if( info.getCurrentAccountName().equals(account_name)) {
+			return true;
+		}
+		return false;
 	}
 }

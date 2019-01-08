@@ -477,7 +477,7 @@ public class DbManagement {
 		add_resource("wangp@ccs", "risetek-yun74-id", "roles", "admin:developer:maintenance:operator:visitor");
 		add_resource("wangp@ccs", "risetek-yun74-id", "teams", "-1");
 		add_one_app("risetek-yun74-id", "risetek yun74 service");
-		add_one_account("admin", "admin", "admin:developer:maintenance:operator:visitor", "-1", "the super account");
+		add_one_account("wangyc@risetek.com", "gamelan", "admin:developer:maintenance:operator:visitor", "-1", "the super account");
 		getUserResourceByName("wangyc@risetek.com", "wangyc@risetek.com");
 	}
 }
