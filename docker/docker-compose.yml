@@ -1,0 +1,13 @@
+
+version: '2.0'
+services:
+ db:
+  image: bigbangbangs/oauth
+  restart: always
+  container_name: "oauth"
+  volumes:
+   - "/risetek-sites/volumes/oauth/volumes/authdb:/risetekauth"
+  ports:
+   - "10082:8080"
+
+
